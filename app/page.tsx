@@ -61,8 +61,8 @@ export default function Home() {
               GitHub Profile
             </button>
             <a
-              href="/resume.pdf"
-              download="MuradDev_Resume.pdf"
+              href="/MuradErtaskinCV.pdf"
+              download="MuradErtaskinCV.pdf"
               className="inline-block px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
             >
               Download CV
@@ -132,7 +132,7 @@ export default function Home() {
             Download my latest resume to learn more about my experience and skills.
           </p>
           <a
-            href="/resume.pdf"
+            href="/MuradErtaskinCV.pdf"
             download="MuradErtaskinCV.pdf"
             className="inline-block px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all font-semibold shadow-lg"
           >
