@@ -1,8 +1,10 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export default function Home() {
+  const router = useRouter()
   const [activeSection, setActiveSection] = useState('home')
 
   const scrollToSection = (id: string) => {
@@ -23,7 +25,7 @@ export default function Home() {
               {['Home', 'About', 'Projects', 'CV', 'Contact'].map((item) => (
                 <button
                   key={item}
-                  onClick={() => scrollToSection(item)}
+                  onClick={() => scrollToSection(item.toLowerCase())}
                   className={`capitalize hover:text-blue-600 dark:hover:text-blue-400 transition-colors ${
                     activeSection === item ? 'text-blue-600 dark:text-blue-400' : ''
                   }`}
@@ -53,11 +55,18 @@ export default function Home() {
               View Projects
             </button>
             <button
-              onClick={() => scrollToSection('cv')}
-              className="px-8 py-3 border-2 border-blue-600 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors font-semibold"
+              onClick={() => window.open('https://github.com/MuradErtas', '_blank')}
+              className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+            >
+              GitHub Profile
+            </button>
+            <a
+              href="/resume.pdf"
+              download="MuradDev_Resume.pdf"
+              className="inline-block px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
             >
               Download CV
-            </button>
+            </a>
           </div>
         </div>
       </section>
@@ -105,6 +114,14 @@ export default function Home() {
             ))}
           </div>
         </div>
+        <div className="flex justify-center mt-12">
+          <button
+            onClick={() => router.push('/projects')}
+            className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+            >
+              See All
+            </button>
+        </div>
       </section>
 
       {/* CV Section */}
@@ -114,9 +131,13 @@ export default function Home() {
           <p className="text-slate-700 dark:text-slate-300 mb-8 text-lg">
             Download my latest resume to learn more about my experience and skills.
           </p>
-          <button className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all font-semibold shadow-lg">
+          <a
+            href="/resume.pdf"
+            download="MuradErtaskinCV.pdf"
+            className="inline-block px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all font-semibold shadow-lg"
+          >
             Download CV (PDF)
-          </button>
+          </a>
         </div>
       </section>
 
