@@ -47,7 +47,7 @@ export default function Home() {
           <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto">
             Developer • Student • Creator • Problem Solver
           </p>
-          <div className="flex gap-4 justify-center">
+          <div className="flex flex-wrap gap-2 md:gap-4 justify-center">
             <button
               onClick={() => scrollToSection('projects')}
               className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
