@@ -9,9 +9,9 @@ export default function ProjectsPage() {
   const projects = [
     {
       id: 1,
-      title: 'Project One',
-      description: 'Placeholder description',
-      tags: ['Placeholder tags'],
+      title: 'RNN vs Transformer',
+      description: 'A comparison of RNN and Transformer models for text generation using an SLM.',
+      tags: ['Github Link'],
       image: 'bg-gradient-to-br from-blue-400 to-purple-500'
     },
     {
@@ -65,7 +65,7 @@ export default function ProjectsPage() {
             </button>
             <button
               onClick={() => router.push('/')}
-              className="px-4 py-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              className="px-4 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
             >
               Back to Home
             </button>
@@ -80,7 +80,7 @@ export default function ProjectsPage() {
             My Projects
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-300 mb-12 text-center max-w-2xl mx-auto">
-            A collection of projects I've worked on. Each one represents a learning experience and a step forward in my development journey.
+            A collection of some projects I have worked on. Each one represents a learning experience and a step forward in my development journey.
           </p>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

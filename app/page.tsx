@@ -49,24 +49,17 @@ export default function Home() {
           </p>
           <div className="flex flex-wrap gap-2 md:gap-4 justify-center">
             <button
-              onClick={() => scrollToSection('projects')}
+              onClick={() => window.open('https://www.linkedin.com/in/abdullah-murad-ertaskin/', '_blank')}
               className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
             >
-              View Projects
+              LinkedIn
             </button>
             <button
               onClick={() => window.open('https://github.com/MuradErtas', '_blank')}
               className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
             >
-              GitHub Profile
+              GitHub
             </button>
-            <a
-              href="/MuradErtaskinCV.pdf"
-              download="MuradErtaskinCV.pdf"
-              className="inline-block px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
-            >
-              Download CV
-            </a>
           </div>
         </div>
       </section>
@@ -77,11 +70,14 @@ export default function Home() {
           <h2 className="text-4xl font-bold mb-8 text-center">About Me</h2>
           <div className="prose prose-lg dark:prose-invert max-w-none">
             <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
-              Hey! I am Abdullah Murad Ertaskin (preferred Murad). I'm a passionate developer and programmer who loves building cool things, creating innovative solutions, and bringing ideas to life. I am currently a student at the University of Adelaide where I am studying a Bachelor of Computer Science with a major in Artificial Intelligence and Machine Learning. Thanks for checking out my portfolio!
+              Hey! I am Abdullah Murad Ertaskin (preferred Murad). I'm a passionate developer and programmer who loves building cool things, creating innovative solutions, and bringing ideas to life. I am currently a student at the University of Adelaide where I am studying a Bachelor of Computer Science with a major in Artificial Intelligence and Machine Learning.
             </p>
             <p className="text-slate-700 dark:text-slate-300 leading-relaxed mt-4">
               When I'm not coding, you can find me exploring new technologies, reading books, working out, gaming,
               or working on personal projects that challenge me to grow.
+            </p>
+            <p className="text-slate-700 dark:text-slate-300 leading-relaxed mt-4">
+            Thanks for checking out my portfolio!
             </p>
           </div>
         </div>
@@ -92,7 +88,28 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold mb-12 text-center">Projects</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
+            <div
+              onClick={() => router.push('/SLMComparison')}
+              className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all border border-slate-200 dark:border-slate-700 cursor-pointer hover:scale-105"
+            >
+              <div className="w-full h-48 bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg mb-4"></div>
+              <h3 className="text-xl font-semibold mb-2">SLM Comparison</h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-4">
+                Interactive comparison of Transformer and RNN language models. Chat with both models side by side to see their differences.
+              </p>
+              <div className="flex gap-2">
+                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm">
+                  PyTorch
+                </span>
+                <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm">
+                  Next.js
+                </span>
+                <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-sm">
+                  AI/ML
+                </span>
+              </div>
+            </div>
+            {[2, 3].map((i) => (
               <div
                 key={i}
                 className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-slate-200 dark:border-slate-700"

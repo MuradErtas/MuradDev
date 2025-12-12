@@ -34,3 +34,15 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Python / ML Models
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.pt
+*.pkl
+SLM/models/
+SLM/__pycache__/
+SLM/*.pyc
+
