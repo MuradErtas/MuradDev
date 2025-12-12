@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt, max_tokens: 50 }), // Reduced for faster inference
+        body: JSON.stringify({ prompt, max_tokens: 1 }), // Reduced for faster inference
         signal: controller.signal,
       })
       
