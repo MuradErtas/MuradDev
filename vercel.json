@@ -7,11 +7,6 @@
     "app/api/slm/generate/route.ts": {
       "maxDuration": 30
     }
-  },
-  "excludeFiles": [
-    "SLM/models/**",
-    "SLM/input.txt",
-    "SLM/slm_gui.py"
-  ]
+  }
 }
 
