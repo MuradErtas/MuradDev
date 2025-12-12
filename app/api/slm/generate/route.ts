@@ -16,14 +16,21 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Call external Python API service
-    const response = await fetch(`${PYTHON_API_URL}/generate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ prompt, max_tokens: 150 }),
-    })
+    // Call external Python API service with timeout
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 55000) // 55s timeout (5s buffer before Vercel's 60s limit)
+    
+    try {
+      const response = await fetch(`${PYTHON_API_URL}/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt, max_tokens: 150 }),
+        signal: controller.signal,
+      })
+      
+      clearTimeout(timeoutId)
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }))
@@ -37,8 +44,22 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const data = await response.json()
-    return NextResponse.json(data)
+      const data = await response.json()
+      return NextResponse.json(data)
+    } catch (fetchError: any) {
+      clearTimeout(timeoutId)
+      
+      if (fetchError.name === 'AbortError') {
+        return NextResponse.json(
+          { 
+            error: 'Request timeout',
+            details: 'The model inference is taking too long. Please try again or use a shorter prompt.'
+          },
+          { status: 504 }
+        )
+      }
+      throw fetchError
+    }
   } catch (error) {
     console.error('API error:', error)
     return NextResponse.json(
