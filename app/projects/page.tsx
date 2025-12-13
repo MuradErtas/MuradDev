@@ -140,17 +140,6 @@ export default function ProjectsPage() {
                     )
                   })}
                 </div>
-                {project.github && (
-                  <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
-                  >
-                    View on GitHub →
-                  </a>
-                )}
               </div>
             ))}
           </div>
