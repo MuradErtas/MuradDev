@@ -89,7 +89,7 @@ export default function Home() {
           <h2 className="text-4xl font-bold mb-12 text-center">Projects</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div
-              onClick={() => router.push('/SLMComparison')}
+              onClick={() => router.push('/slmcomparison')}
               className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all border border-slate-200 dark:border-slate-700 cursor-pointer hover:scale-105"
             >
               <div className="w-full h-48 bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg mb-4"></div>
@@ -109,7 +109,28 @@ export default function Home() {
                 </span>
               </div>
             </div>
-            {[2, 3].map((i) => (
+            <div
+              onClick={() => router.push('/about')}
+              className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all border border-slate-200 dark:border-slate-700 cursor-pointer hover:scale-105"
+            >
+              <div className="w-full h-48 bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg mb-4"></div>
+              <h3 className="text-xl font-semibold mb-2">Portfolio Website</h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-4">
+                Fully functional website with a modern design and a responsive layout, built with Next.js, TypeScript, and Tailwind CSS.
+              </p>
+              <div className="flex gap-2">
+                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm">
+                  Next.js
+                </span>
+                <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm">
+                  TypeScript
+                </span>
+                <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-sm">
+                  Tailwind
+                </span>
+              </div>
+            </div>
+            {[3].map((i) => (
               <div
                 key={i}
                 className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-slate-200 dark:border-slate-700"

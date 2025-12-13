@@ -14,10 +14,66 @@
   }
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: #f8fafc; /* slate-50 */
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #0f172a; /* slate-900 */
+  }
+}
+
+/* Custom scrollbar styling to match page gradient */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8fafc; /* slate-50 */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1; /* slate-300 */
+  border-radius: 6px;
+  border: 2px solid #f8fafc;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8; /* slate-400 */
+}
+
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-track {
+    background: #0f172a; /* slate-900 - matches gradient start */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #1e293b; /* slate-800 - matches gradient end */
+    border: 2px solid #0f172a;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #334155; /* slate-700 */
+  }
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f8fafc;
+}
+
+@media (prefers-color-scheme: dark) {
+  * {
+    scrollbar-color: #1e293b #0f172a; /* thumb track - matches gradient */
+  }
 }
 
 /* Hide scrollbars but keep scrolling functionality */

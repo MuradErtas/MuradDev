@@ -122,7 +122,7 @@ export default function SLMComparisonPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex flex-col">
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md z-50 border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <button
               onClick={() => router.push('/')}
@@ -131,12 +131,6 @@ export default function SLMComparisonPage() {
               MuradDev
             </button>
             <div className="flex items-center gap-4">
-              <button
-                onClick={clearChat}
-                className="px-4 text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-              >
-                Clear Chat
-              </button>
               <button
                 onClick={() => router.push('/')}
                 className="px-4 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
@@ -275,9 +269,22 @@ export default function SLMComparisonPage() {
             >
               {loading ? 'Sending...' : 'Send'}
             </button>
+            <button
+                onClick={clearChat}
+                className="px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors font-semibold"
+              >
+                Clear
+              </button>
           </div>
         </div>
+
       </div>
+        {/* Footer */}
+        <footer className="py-8 px-6 border-t border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50">
+            <div className="max-w-7xl mx-auto text-center text-slate-600 dark:text-slate-400">
+                <p>© {new Date().getFullYear()} MuradDev. All rights reserved.</p> <a href="https://github.com/MuradErtas/SLM-Comparison--RNN-vs.-Transformer-" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">GitHub</a> repository for this project.
+            </div>
+        </footer>
     </div>
   )
 }

@@ -2,24 +2,48 @@
 
 import { useRouter } from 'next/navigation'
 
+interface ProjectTag {
+  name: string
+  color: 'blue' | 'purple' | 'green'
+}
+
+interface Project {
+  id: number
+  title: string
+  description: string
+  tags: ProjectTag[] | string[]
+  image: string
+  link?: string
+}
+
 export default function ProjectsPage() {
   const router = useRouter()
 
   // Placeholder projects data
-  const projects = [
+  const projects: Project[] = [
     {
       id: 1,
-      title: 'RNN vs Transformer',
-      description: 'A comparison of RNN and Transformer models for text generation using an SLM.',
-      tags: ['Github Link'],
-      image: 'bg-gradient-to-br from-blue-400 to-purple-500'
+      title: 'SLM Comparison',
+      description: 'Interactive comparison of Transformer and RNN language models. Chat with both models side by side to see their differences.',
+      tags: [
+        { name: 'PyTorch', color: 'blue' },
+        { name: 'Next.js', color: 'purple' },
+        { name: 'AI/ML', color: 'green' }
+      ],
+      image: 'bg-gradient-to-br from-blue-400 to-purple-500',
+      link: '/slmcomparison',
     },
     {
       id: 2,
-      title: 'Project Two',
-      description: 'Placeholder description',
-      tags: ['Placeholder tags'],
-      image: 'bg-gradient-to-br from-purple-400 to-pink-500'
+      title: 'Portfolio Website',
+      description: 'Fully functional website with a modern design and a responsive layout, built with Next.js, TypeScript, and Tailwind CSS.',
+      tags: [
+        { name: 'Next.js', color: 'blue' },
+        { name: 'TypeScript', color: 'purple' },
+        { name: 'Tailwind', color: 'green' }
+      ],
+      image: 'bg-gradient-to-br from-purple-400 to-pink-500',
+      link: '/about'
     },
     {
       id: 3,
@@ -87,23 +111,46 @@ export default function ProjectsPage() {
             {projects.map((project) => (
               <div
                 key={project.id}
-                className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all border border-slate-200 dark:border-slate-700 hover:scale-105"
+                className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all border border-slate-200 dark:border-slate-700 hover:scale-105 cursor-pointer"
+                onClick={() => project.link && router.push(project.link)}
               >
                 <div className={`w-full h-48 ${project.image} rounded-lg mb-4`}></div>
                 <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
-                <p className="text-slate-600 dark:text-slate-400 mb-4 text-sm leading-relaxed">
+                <p className="text-slate-600 dark:text-slate-400 mb-4">
                   {project.description}
                 </p>
-                <div className="flex flex-wrap gap-2">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                <div className="flex gap-2">
+                  {project.tags.map((tag, index) => {
+                    const tagName = typeof tag === 'string' ? tag : tag.name
+                    const tagColor = typeof tag === 'string' ? 'blue' : tag.color
+                    
+                    const colorClasses = {
+                      blue: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+                      purple: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+                      green: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                    }
+                    
+                    return (
+                      <span
+                        key={index}
+                        className={`px-3 py-1 ${colorClasses[tagColor]} rounded-full text-sm`}
+                      >
+                        {tagName}
+                      </span>
+                    )
+                  })}
                 </div>
+                {project.github && (
+                  <a
+                    href={project.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                  >
+                    View on GitHub →
+                  </a>
+                )}
               </div>
             ))}
           </div>

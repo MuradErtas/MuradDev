@@ -6,8 +6,6 @@ import { NextRequest, NextResponse } from 'next/server'
 const PYTHON_API_URL = process.env.PYTHON_API_URL || 'http://localhost:8000'
 
 export async function POST(request: NextRequest) {
-  const startTime = Date.now()
-  
   try {
     const { prompt } = await request.json()
 
@@ -17,19 +15,15 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
-
-    console.log(`[${Date.now() - startTime}ms] Starting request to Python API`)
     
     // Call external Python API service with timeout
     const controller = new AbortController()
     const timeoutId = setTimeout(() => {
-      console.error(`[${Date.now() - startTime}ms] Request timeout after 55s`)
+      console.error('Request to Python API timed out after 55s')
       controller.abort()
     }, 55000) // 55s timeout (5s buffer before Vercel's 60s limit)
     
     try {
-      console.log(`[${Date.now() - startTime}ms] Fetching from: ${PYTHON_API_URL}/generate`)
-      
       const response = await fetch(`${PYTHON_API_URL}/generate`, {
         method: 'POST',
         headers: {
@@ -38,8 +32,6 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify({ prompt, max_tokens: 50 }),
         signal: controller.signal,
       })
-      
-      console.log(`[${Date.now() - startTime}ms] Received response: ${response.status}`)
       
       clearTimeout(timeoutId)
 
@@ -56,7 +48,6 @@ export async function POST(request: NextRequest) {
     }
 
       const data = await response.json()
-      console.log(`[${Date.now() - startTime}ms] Successfully parsed response`)
       return NextResponse.json(data)
     } catch (fetchError: any) {
       clearTimeout(timeoutId)
