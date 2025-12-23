@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Python API URL - set via environment variable
+// SLM Comparison API URL - set via environment variable
 // For local dev, defaults to localhost:8000
-// For production, set PYTHON_API_URL in Vercel
-const PYTHON_API_URL = process.env.PYTHON_API_URL || 'http://localhost:8000'
+// For production, set SLM_COMP_API in Vercel
+const SLM_COMP_API_URL = process.env.SLM_COMP_API || 'http://localhost:8000'
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     }, 55000) // 55s timeout (5s buffer before Vercel's 60s limit)
     
     try {
-      const response = await fetch(`${PYTHON_API_URL}/generate`, {
+      const response = await fetch(`${SLM_COMP_API_URL}/generate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

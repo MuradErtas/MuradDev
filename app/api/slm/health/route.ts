@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Python API URL - set via environment variable
-const PYTHON_API_URL = process.env.PYTHON_API_URL || 'http://localhost:8000'
+// SLM Comparison API URL - set via environment variable
+const SLM_COMP_API_URL = process.env.SLM_COMP_API || 'http://localhost:8000'
 
 export async function GET(request: NextRequest) {
   try {
@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
     
     try {
-      const response = await fetch(`${PYTHON_API_URL}/health`, {
+      const response = await fetch(`${SLM_COMP_API_URL}/health`, {
         method: 'GET',
         signal: controller.signal,
       })
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
             status: 'unhealthy',
             pythonApi: 'unreachable',
             error: `Python API returned ${response.status}`,
-            url: PYTHON_API_URL
+            url: SLM_COMP_API_URL
           },
           { status: 503 }
         )
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
         status: 'healthy',
         pythonApi: 'reachable',
         pythonApiStatus: data,
-        url: PYTHON_API_URL
+        url: SLM_COMP_API_URL
       })
     } catch (fetchError: any) {
       clearTimeout(timeoutId)
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
             status: 'unhealthy',
             pythonApi: 'timeout',
             error: 'Health check timed out after 10 seconds',
-            url: PYTHON_API_URL
+            url: SLM_COMP_API_URL
           },
           { status: 503 }
         )
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
           status: 'unhealthy',
           pythonApi: 'unreachable',
           error: fetchError.message || 'Connection failed',
-          url: PYTHON_API_URL
+          url: SLM_COMP_API_URL
         },
         { status: 503 }
       )
@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
         status: 'unhealthy',
         pythonApi: 'error',
         error: error instanceof Error ? error.message : 'Unknown error',
-        url: PYTHON_API_URL
+        url: SLM_COMP_API_URL
       },
       { status: 503 }
     )

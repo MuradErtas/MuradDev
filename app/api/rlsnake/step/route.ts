@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const RLSNAKE_API_URL = process.env.RLSNAKE_API_URL || 'http://localhost:8000'
+// Helper to ensure URL has protocol
+const getRlsnakeApiUrl = () => {
+  const url = process.env.RL_SNAKE_API || 'http://localhost:8000'
+  // If URL doesn't start with http:// or https://, add https://
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    return `https://${url}`
+  }
+  return url
+}
+
+const RL_SNAKE_API_URL = getRlsnakeApiUrl()
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,7 +23,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const response = await fetch(`${RLSNAKE_API_URL}/step`, {
+    const response = await fetch(`${RL_SNAKE_API_URL}/step`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
