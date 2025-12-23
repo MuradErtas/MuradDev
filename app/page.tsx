@@ -130,26 +130,27 @@ export default function Home() {
                 </span>
               </div>
             </div>
-            {[3].map((i) => (
-              <div
-                key={i}
-                className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow border border-slate-200 dark:border-slate-700"
-              >
-                <div className="w-full h-48 bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg mb-4"></div>
-                <h3 className="text-xl font-semibold mb-2">Project {i}</h3>
-                <p className="text-slate-600 dark:text-slate-400 mb-4">
-                  Description of project {i}. Built with modern technologies and best practices.
-                </p>
-                <div className="flex gap-2">
-                  <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm">
-                    React
-                  </span>
-                  <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm">
-                    TypeScript
-                  </span>
-                </div>
+            <div
+              onClick={() => router.push('/rlsnake')}
+              className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all border border-slate-200 dark:border-slate-700 cursor-pointer hover:scale-105"
+            >
+              <div className="w-full h-48 bg-gradient-to-br from-green-400 to-blue-500 rounded-lg mb-4"></div>
+              <h3 className="text-xl font-semibold mb-2">RL Snake</h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-4">
+                Watch reinforcement learning models play Snake! Compare 4 models with different training levels.
+              </p>
+              <div className="flex gap-2">
+                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm">
+                  PyTorch
+                </span>
+                <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm">
+                  RL/DQN
+                </span>
+                <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-sm">
+                  AI/ML
+                </span>
               </div>
-            ))}
+            </div>
           </div>
         </div>
         <div className="flex justify-center mt-12">

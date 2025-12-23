@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 
 interface ProjectTag {
   name: string
-  color: 'blue' | 'purple' | 'green'
+  color: 'blue' | 'purple' | 'green' | 'orange'
 }
 
 interface Project {
@@ -47,10 +47,15 @@ export default function ProjectsPage() {
     },
     {
       id: 3,
-      title: 'Project Three',
-      description: 'Placeholder description',
-      tags: ['Placeholder tags'],
-      image: 'bg-gradient-to-br from-green-400 to-blue-500'
+      title: 'RL Snake',
+      description: 'Watch reinforcement learning models play Snake! Compare 4 models with different training levels to see how they improve.',
+      tags: [
+        { name: 'PyTorch', color: 'blue' },
+        { name: 'RL/DQN', color: 'purple' },
+        { name: 'AI/ML', color: 'green' }
+      ],
+      image: 'bg-gradient-to-br from-green-400 to-blue-500',
+      link: '/rlsnake'
     },
     {
       id: 4,
@@ -127,7 +132,8 @@ export default function ProjectsPage() {
                     const colorClasses = {
                       blue: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
                       purple: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
-                      green: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                      green: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
+                      orange: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
                     }
                     
                     return (

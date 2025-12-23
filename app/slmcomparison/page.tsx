@@ -149,7 +149,7 @@ export default function SLMComparisonPage() {
             SLM Comparison
           </h1>
           <p className="text-center text-slate-600 dark:text-slate-300">
-            Compare Transformer and RNN small language model responses side by side, trained on the same dataset (Shakespeare's plays) with the same hyperparameters.
+            Compare Transformer and RNN small language model responses side by side, trained on the same dataset (Shakespeare's plays) with the same hyperparameters. Built from scratch using PyTorch with a custom tokeniser, see GitHub repository for more details.
           </p>
         </div>
       </div>
