@@ -39,26 +39,6 @@ export default function QuantiumPage() {
             Transformed raw sales data into actionable insights through data cleaning, aggregation, and interactive dashboards.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            {/* Replace with your deployed Dash app URL - set NEXT_PUBLIC_QUANTIUM_DASH_URL in Vercel */}
-            <a
-              href={process.env.NEXT_PUBLIC_QUANTIUM_DASH_URL || '#'}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-colors font-semibold text-lg shadow-lg ${
-                !process.env.NEXT_PUBLIC_QUANTIUM_DASH_URL ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-              onClick={(e) => {
-                if (!process.env.NEXT_PUBLIC_QUANTIUM_DASH_URL) {
-                  e.preventDefault()
-                  alert('Dashboard URL not configured. Please set NEXT_PUBLIC_QUANTIUM_DASH_URL environment variable in Vercel or update the link in the code.')
-                }
-              }}
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-              Open Interactive Dashboard
-            </a>
           </div>
         </div>
 
