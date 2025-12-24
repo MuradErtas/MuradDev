@@ -59,10 +59,15 @@ export default function ProjectsPage() {
     },
     {
       id: 4,
-      title: 'Project Four',
-      description: 'Placeholder description',
-      tags: ['Placeholder tags'],
-      image: 'bg-gradient-to-br from-orange-400 to-red-500'
+      title: 'Quantium Data Analytics',
+      description: 'Data processing and visualization project. Transformed raw sales data into actionable insights with interactive dashboards.',
+      tags: [
+        { name: 'Python', color: 'blue' },
+        { name: 'Pandas', color: 'purple' },
+        { name: 'Dash', color: 'green' }
+      ],
+      image: 'bg-gradient-to-br from-orange-400 to-red-500',
+      link: '/quantium'
     },
     {
       id: 5,
