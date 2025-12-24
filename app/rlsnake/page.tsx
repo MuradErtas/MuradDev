@@ -41,23 +41,23 @@ export default function RLSnakePage() {
     { 
       id: 'beginner' as ModelLevel, 
       name: 'Beginner', 
-      description: 'Basic training (~100 episodes)',
+      description: 'Basic training (~50 episodes)',
       color: 'orange',
-      trainingEpisodes: 100
+      trainingEpisodes: 50
     },
     { 
       id: 'intermediate' as ModelLevel, 
       name: 'Intermediate', 
-      description: 'Moderate training (~500 episodes)',
+      description: 'Moderate training (~250 episodes)',
       color: 'yellow',
-      trainingEpisodes: 500
+      trainingEpisodes: 250
     },
     { 
       id: 'advanced' as ModelLevel, 
       name: 'Advanced', 
-      description: 'Extensive training (~2000 episodes)',
+      description: 'Extensive training (~1000 episodes)',
       color: 'green',
-      trainingEpisodes: 2000
+      trainingEpisodes: 1000
     }
   ]
 
@@ -386,12 +386,67 @@ export default function RLSnakePage() {
             </button>
           </div>
         </div>
+
+        {/* About Section */}
+        <div className="mt-12 mb-8">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
+            <h2 className="text-3xl font-bold mb-6 text-slate-700 dark:text-slate-300">About This Project</h2>
+            
+            <div className="space-y-6 text-slate-600 dark:text-slate-400">
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Overview</h3>
+                <p className="leading-relaxed">
+                  This project demonstrates reinforcement learning in action by training Deep Q-Network (DQN) agents to play Snake. 
+                  The agents learn through trial and error, gradually improving their gameplay as they accumulate training experience. 
+                  You can compare models at different training stages to see how reinforcement learning algorithms develop strategic 
+                  decision-making capabilities over time.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Technologies Used</h3>
+                <ul className="list-disc list-inside space-y-2 leading-relaxed">
+                  <li><strong className="text-slate-800 dark:text-slate-200">PyTorch:</strong> Deep learning framework for implementing and training the DQN neural network</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Deep Q-Learning (DQN):</strong> Reinforcement learning algorithm that uses a neural network to approximate Q-values</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">FastAPI:</strong> Python backend API for running game logic and model inference</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Next.js & React:</strong> Frontend framework for interactive UI and real-time game visualization</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Canvas API:</strong> HTML5 Canvas for rendering the game grid and snake visualization</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Docker & Railway:</strong> Containerization and cloud deployment for the Python API service</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Skills Developed</h3>
+                <ul className="list-disc list-inside space-y-2 leading-relaxed">
+                  <li>Reinforcement learning algorithm implementation and hyperparameter tuning</li>
+                  <li>Neural network architecture design for Q-value approximation</li>
+                  <li>Game state representation and reward function engineering</li>
+                  <li>Full-stack development with separated frontend/backend architecture</li>
+                  <li>RESTful API design for real-time game state management</li>
+                  <li>Asynchronous programming and concurrent request handling</li>
+                  <li>Model deployment and serving in production environments</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Key Features</h3>
+                <ul className="list-disc list-inside space-y-2 leading-relaxed">
+                  <li>Interactive visualization of AI agents playing Snake in real-time</li>
+                  <li>Comparison of models at different training stages (untrained to advanced)</li>
+                  <li>Session-based game state management for multiple concurrent games</li>
+                  <li>Responsive UI with dark mode support</li>
+                  <li>Production-ready deployment with proper error handling and timeouts</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50">
         <div className="max-w-7xl mx-auto text-center text-slate-600 dark:text-slate-400">
-          <p>© {new Date().getFullYear()} MuradDev. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} MuradDev. All rights reserved.</p> <a href="https://github.com/MuradErtas/RLSnake" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">GitHub</a> repository for this project.
         </div>
       </footer>
     </div>

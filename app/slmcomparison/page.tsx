@@ -278,11 +278,69 @@ export default function SLMComparisonPage() {
           </div>
         </div>
 
+        {/* About Section */}
+        <div className="mt-12 mb-8">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
+            <h2 className="text-3xl font-bold mb-6 text-slate-700 dark:text-slate-300">About This Project</h2>
+            
+            <div className="space-y-6 text-slate-600 dark:text-slate-400">
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Overview</h3>
+                <p className="leading-relaxed">
+                  This project compares two fundamental neural network architectures for language modeling: Transformers and RNNs (LSTM). 
+                  Both models are trained from scratch on the same dataset (Shakespeare's plays) with identical hyperparameters, 
+                  allowing for a fair comparison of their capabilities. The side-by-side interface lets you interact with both models 
+                  simultaneously to observe their differences in text generation, coherence, and style.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Technologies Used</h3>
+                <ul className="list-disc list-inside space-y-2 leading-relaxed">
+                  <li><strong className="text-slate-800 dark:text-slate-200">PyTorch:</strong> Deep learning framework for implementing Transformer and LSTM architectures</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Transformer Architecture:</strong> Attention-based model with multi-head self-attention and feed-forward layers</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">RNN/LSTM:</strong> Recurrent neural network with Long Short-Term Memory cells for sequence modeling</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Custom Tokenizer:</strong> Byte-pair encoding (BPE) implementation for text preprocessing</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">FastAPI:</strong> Python backend API for model inference and text generation</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Next.js & React:</strong> Frontend framework for interactive chat interface</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Docker & Railway:</strong> Containerization and cloud deployment for the ML API service</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Skills Developed</h3>
+                <ul className="list-disc list-inside space-y-2 leading-relaxed">
+                  <li>Neural network architecture implementation from scratch (Transformer and LSTM)</li>
+                  <li>Natural language processing and language model training</li>
+                  <li>Attention mechanism understanding and implementation</li>
+                  <li>Custom tokenizer development using byte-pair encoding</li>
+                  <li>Model training, validation, and hyperparameter optimization</li>
+                  <li>Full-stack development with ML model integration</li>
+                  <li>Asynchronous API design for handling concurrent inference requests</li>
+                  <li>Production deployment of machine learning models</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Key Features</h3>
+                <ul className="list-disc list-inside space-y-2 leading-relaxed">
+                  <li>Side-by-side comparison of Transformer and RNN model responses</li>
+                  <li>Real-time text generation with both models simultaneously</li>
+                  <li>Interactive chat interface for testing model capabilities</li>
+                  <li>Models trained on Shakespeare's plays for consistent comparison</li>
+                  <li>Responsive UI with independent scrolling panels and dark mode support</li>
+                  <li>Production-ready deployment with proper error handling and timeouts</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
         {/* Footer */}
         <footer className="py-8 px-6 border-t border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50">
             <div className="max-w-7xl mx-auto text-center text-slate-600 dark:text-slate-400">
-                <p>© {new Date().getFullYear()} MuradDev. All rights reserved.</p> <a href="https://github.com/MuradErtas/SLM-Comparison--RNN-vs.-Transformer-" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">GitHub</a> repository for this project.
+                <p>© {new Date().getFullYear()} MuradDev. All rights reserved.</p> <a href="https://github.com/MuradErtas/SLM-Comparison--RNN-vs.-Transformer" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">GitHub</a> repository for this project.
             </div>
         </footer>
     </div>
