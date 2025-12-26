@@ -2,10 +2,13 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import emailjs from '@emailjs/browser'
 
 export default function Home() {
   const router = useRouter()
   const [activeSection, setActiveSection] = useState('home')
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' })
+  const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
   const scrollToSection = (id: string) => {
     setActiveSection(id)
@@ -185,38 +188,124 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-bold mb-12 text-center">Get In Touch</h2>
           <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
-            <form className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">Name</label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700"
-                  placeholder="Your name"
-                />
+            {formStatus === 'success' ? (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-semibold text-slate-700 dark:text-slate-300 mb-2">Message Sent!</h3>
+                <p className="text-slate-600 dark:text-slate-400 mb-6">Thank you for reaching out. I'll get back to you soon.</p>
+                <button
+                  onClick={() => {
+                    setFormStatus('idle')
+                    setFormData({ name: '', email: '', message: '' })
+                  }}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+                >
+                  Send Another Message
+                </button>
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Email</label>
-                <input
-                  type="email"
-                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700"
-                  placeholder="your.email@example.com"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Message</label>
-                <textarea
-                  rows={5}
-                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700"
-                  placeholder="Your message..."
-                ></textarea>
-              </div>
-              <button
-                type="submit"
-                className="w-full px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+            ) : (
+              <form 
+                className="space-y-6"
+                onSubmit={async (e) => {
+                  e.preventDefault()
+                  setFormStatus('loading')
+                  
+                  try {
+                    // Initialize EmailJS with your public key
+                    // Replace these with your EmailJS credentials
+                    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID'
+                    const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'YOUR_TEMPLATE_ID'
+                    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'YOUR_PUBLIC_KEY'
+                    
+                    await emailjs.send(
+                      serviceId,
+                      templateId,
+                      {
+                        name: formData.name,
+                        email: formData.email,
+                        message: formData.message,
+                        title: 'Portfolio Contact Form', // For the subject line {{title}}
+                      },
+                      publicKey
+                    )
+                    
+                    setFormStatus('success')
+                    setFormData({ name: '', email: '', message: '' })
+                  } catch (error) {
+                    console.error('EmailJS error:', error)
+                    setFormStatus('error')
+                  }
+                }}
               >
-                Send Message
-              </button>
-            </form>
+                {formStatus === 'error' && (
+                  <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                    <p className="text-red-800 dark:text-red-200 text-sm">
+                      Failed to send message. Please try again or contact me directly via email.
+                    </p>
+                  </div>
+                )}
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">Name</label>
+                  <input
+                    id="name"
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+                    placeholder="Your name"
+                    disabled={formStatus === 'loading'}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">Email</label>
+                  <input
+                    id="email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+                    placeholder="your.email@example.com"
+                    disabled={formStatus === 'loading'}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="message" className="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">Message</label>
+                  <textarea
+                    id="message"
+                    rows={5}
+                    required
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 resize-none"
+                    placeholder="Your message..."
+                    disabled={formStatus === 'loading'}
+                  ></textarea>
+                </div>
+                <button
+                  type="submit"
+                  disabled={formStatus === 'loading'}
+                  className="w-full px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors font-semibold flex items-center justify-center gap-2"
+                >
+                  {formStatus === 'loading' ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Sending...
+                    </>
+                  ) : (
+                    'Send Message'
+                  )}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </section>
