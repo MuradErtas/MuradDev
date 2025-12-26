@@ -70,7 +70,7 @@ export default function Home() {
           <h2 className="text-4xl font-bold mb-8 text-center">About Me</h2>
           <div className="prose prose-lg dark:prose-invert max-w-none">
             <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
-              Hey! I am Abdullah Murad Ertaskin (preferred Murad). I'm a passionate developer and programmer who loves building cool things, creating innovative solutions, and bringing ideas to life. I am currently a student at the University of Adelaide where I am studying a Bachelor of Computer Science with a major in Artificial Intelligence and Machine Learning.
+              Hey! I am Abdullah Murad Ertaskin (preferred Murad). I'm a passionate developer and programmer who loves building cool things, creating innovative solutions, and bringing ideas to life. I am currently a student at the University of Adelaide where I am studying a Bachelor of Information Technology with a major in Artificial Intelligence and Machine Learning.
             </p>
             <p className="text-slate-700 dark:text-slate-300 leading-relaxed mt-4">
               When I'm not coding, you can find me exploring new technologies, reading books, working out, gaming,
