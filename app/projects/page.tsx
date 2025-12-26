@@ -69,20 +69,6 @@ export default function ProjectsPage() {
       image: 'bg-gradient-to-br from-orange-400 to-red-500',
       link: '/quantium'
     },
-    {
-      id: 5,
-      title: 'Project Five',
-      description: 'Placeholder description',
-      tags: ['Placeholder tags'],
-      image: 'bg-gradient-to-br from-indigo-400 to-purple-500'
-    },
-    {
-      id: 6,
-      title: 'Project Six',
-      description: 'Placeholder description',
-      tags: ['Placeholder tags'],
-      image: 'bg-gradient-to-br from-teal-400 to-cyan-500'
-    }
   ]
 
   return (
