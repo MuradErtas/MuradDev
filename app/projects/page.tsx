@@ -81,6 +81,18 @@ export default function ProjectsPage() {
       image: 'bg-gradient-to-br from-indigo-400 to-purple-500',
       link: '/streamlit-demo'
     },
+    {
+      id: 6,
+      title: 'Web Scraper Demo',
+      description: 'Web scraping application that extracts structured data, handles Cloudflare protection, and provides interactive visualization.',
+      tags: [
+        { name: 'Python', color: 'blue' },
+        { name: 'Selenium', color: 'purple' },
+        { name: 'Streamlit', color: 'green' }
+      ],
+      image: 'bg-gradient-to-br from-teal-400 to-cyan-500',
+      link: '/webscraper-demo'
+    },
   ]
 
   return (
