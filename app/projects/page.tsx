@@ -69,6 +69,18 @@ export default function ProjectsPage() {
       image: 'bg-gradient-to-br from-orange-400 to-red-500',
       link: '/quantium'
     },
+    {
+      id: 5,
+      title: 'Streamlit Demo',
+      description: 'Interactive web application built with Streamlit, showcasing data visualization and interactive features.',
+      tags: [
+        { name: 'Python', color: 'blue' },
+        { name: 'Streamlit', color: 'purple' },
+        { name: 'Data Viz', color: 'green' }
+      ],
+      image: 'bg-gradient-to-br from-indigo-400 to-purple-500',
+      link: '/streamlit-demo'
+    },
   ]
 
   return (
