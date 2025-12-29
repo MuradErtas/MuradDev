@@ -93,6 +93,18 @@ export default function ProjectsPage() {
       image: 'bg-gradient-to-br from-teal-400 to-cyan-500',
       link: '/webscraper-demo'
     },
+    {
+      id: 7,
+      title: 'Web Automation Kit',
+      description: 'Config-driven web automation framework with multiple automation patterns: login, downloads, forms, table scraping, and dynamic content.',
+      tags: [
+        { name: 'Python', color: 'blue' },
+        { name: 'Selenium', color: 'purple' },
+        { name: 'Automation', color: 'green' }
+      ],
+      image: 'bg-gradient-to-br from-cyan-400 to-blue-500',
+      link: '/web-automation-kit'
+    },
   ]
 
   return (
@@ -170,7 +182,7 @@ export default function ProjectsPage() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50">
         <div className="max-w-6xl mx-auto text-center text-slate-600 dark:text-slate-400">
-          <p>© {new Date().getFullYear()} MuradDev. All rights reserved.</p>
+          <p>© 2025 MuradDev. All rights reserved.</p>
         </div>
       </footer>
     </div>
