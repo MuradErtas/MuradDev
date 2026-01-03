@@ -105,6 +105,18 @@ export default function ProjectsPage() {
       image: 'bg-gradient-to-br from-cyan-400 to-blue-500',
       link: '/web-automation-kit'
     },
+    {
+      id: 8,
+      title: 'Competely',
+      description: 'Price tracking SaaS platform for monitoring competitor websites, tracking price changes, and making data-driven pricing decisions.',
+      tags: [
+        { name: 'Next.js', color: 'blue' },
+        { name: 'Supabase', color: 'purple' },
+        { name: 'SaaS', color: 'green' }
+      ],
+      image: 'bg-gradient-to-br from-emerald-400 to-teal-500',
+      link: '/competely'
+    },
   ]
 
   return (
