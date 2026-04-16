@@ -53,11 +53,8 @@ export default function HeroCanvas() {
     }
 
     /* ── event handlers ── */
-    const onPointerMove = (e: PointerEvent) => {
-      // Ignore touch — on mobile a tap permanently locks particles to that
-      // spot because there is no matching "leave" event when the finger lifts.
-      if (e.pointerType === 'touch') return
-
+    const onMouseMove = (e: MouseEvent) => {
+      // mousemove never fires on touch/scroll — naturally immune to mobile chaos
       const r = canvas.getBoundingClientRect()
       const x = e.clientX - r.left
       const y = e.clientY - r.top
@@ -69,13 +66,17 @@ export default function HeroCanvas() {
         mouseY = -9999
       }
     }
-    const onPointerLeaveWindow = (e: PointerEvent) => {
-      if (e.pointerType === 'touch') return
+    const onMouseLeave = () => {
       mouseX = -9999
       mouseY = -9999
     }
 
-    const onResize = () => { resize(); spawnParticles() }
+    // Debounce resize so mobile address-bar hide/show doesn't thrash the canvas
+    let resizeTimer: ReturnType<typeof setTimeout>
+    const onResize = () => {
+      clearTimeout(resizeTimer)
+      resizeTimer = setTimeout(() => { resize(); spawnParticles() }, 150)
+    }
 
     /* ── main draw loop ── */
     const draw = () => {
@@ -175,14 +176,15 @@ export default function HeroCanvas() {
     spawnParticles()
     draw()
 
-    window.addEventListener('pointermove',  onPointerMove)
-    window.addEventListener('pointerleave', onPointerLeaveWindow)
+    canvas.addEventListener('mousemove',  onMouseMove)
+    canvas.addEventListener('mouseleave', onMouseLeave)
     window.addEventListener('resize',     onResize)
 
     return () => {
       cancelAnimationFrame(raf)
-      window.removeEventListener('pointermove',  onPointerMove)
-      window.removeEventListener('pointerleave', onPointerLeaveWindow)
+      clearTimeout(resizeTimer)
+      canvas.removeEventListener('mousemove',  onMouseMove)
+      canvas.removeEventListener('mouseleave', onMouseLeave)
       window.removeEventListener('resize',     onResize)
     }
   }, [])
