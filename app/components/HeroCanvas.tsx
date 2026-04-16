@@ -10,10 +10,13 @@ interface Particle {
   size: number
 }
 
-const PARTICLE_COUNT = 80
-const MAX_CONN_DIST  = 120   // px — max distance to draw a line
+const PARTICLE_COUNT = 120
+const MAX_CONN_DIST  = 160   // px — max distance to draw a line
 const MOUSE_RADIUS   = 160   // px — mouse attraction radius
 const MAX_SPEED      = 1.2
+const WIND_X_STRENGTH = 0.002
+const WIND_Y_STRENGTH = 0.001
+const GUST_STRENGTH   = 0.0001
 
 export default function HeroCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -50,26 +53,43 @@ export default function HeroCanvas() {
     }
 
     /* ── event handlers ── */
-    const onMouseMove = (e: MouseEvent) => {
+    const onPointerMove = (e: PointerEvent) => {
       const r = canvas.getBoundingClientRect()
-      mouseX = e.clientX - r.left
-      mouseY = e.clientY - r.top
+      const x = e.clientX - r.left
+      const y = e.clientY - r.top
+      // Track pointer anywhere on screen, but only activate
+      // the canvas interaction when pointer is inside hero canvas.
+      if (x >= 0 && x <= canvas.width && y >= 0 && y <= canvas.height) {
+        mouseX = x
+        mouseY = y
+      } else {
+        mouseX = -9999
+        mouseY = -9999
+      }
     }
-    const onMouseLeave = () => { mouseX = -9999; mouseY = -9999 }
+    const onPointerLeaveWindow = () => { mouseX = -9999; mouseY = -9999 }
 
     const onResize = () => { resize(); spawnParticles() }
 
     /* ── main draw loop ── */
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
+      const t = performance.now() * 0.001
 
       const dark       = document.documentElement.classList.contains('dark')
-      const baseAlpha  = dark ? 0.45 : 0.35
+      const baseAlpha  = dark ? 0.52 : 0.40
       const dotRGBA    = dark ? '148,163,184' : '79,70,229'   // slate-400 | indigo-600
       const lineRGBA   = dark ? '148,163,184' : '79,70,229'
 
       /* update */
       for (const p of particles) {
+        // Smooth autonomous drift so the constellation feels alive.
+        const windX = Math.sin(t * 0.45 + p.y * 0.02) * WIND_X_STRENGTH
+        const windY = Math.cos(t * 0.35 + p.x * 0.015) * WIND_Y_STRENGTH
+        const gust  = Math.sin(t * 0.22) * GUST_STRENGTH
+        p.vx += windX + gust
+        p.vy += windY
+
         const dx   = mouseX - p.x
         const dy   = mouseY - p.y
         const dist = Math.hypot(dx, dy)
@@ -106,7 +126,7 @@ export default function HeroCanvas() {
           const dy   = particles[i].y - particles[j].y
           const dist = Math.hypot(dx, dy)
           if (dist < MAX_CONN_DIST) {
-            const alpha = (1 - dist / MAX_CONN_DIST) * 0.28
+            const alpha = (1 - dist / MAX_CONN_DIST) * 0.34
             ctx.beginPath()
             ctx.moveTo(particles[i].x, particles[i].y)
             ctx.lineTo(particles[j].x, particles[j].y)
@@ -122,7 +142,7 @@ export default function HeroCanvas() {
         const dxm   = mouseX - p.x
         const dym   = mouseY - p.y
         const mDist = Math.hypot(dxm, dym)
-        const alpha = mDist < 100 ? baseAlpha + (1 - mDist / 100) * 0.45 : baseAlpha
+        const alpha = mDist < 100 ? baseAlpha + (1 - mDist / 100) * 0.50 : baseAlpha
 
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
@@ -134,8 +154,8 @@ export default function HeroCanvas() {
       if (mouseX > 0 && mouseX < canvas.width && mouseY > 0 && mouseY < canvas.height) {
         const glowRGBA = dark ? '139,92,246' : '99,102,241'
         const grd = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 90)
-        grd.addColorStop(0,   `rgba(${glowRGBA},${dark ? 0.10 : 0.07})`)
-        grd.addColorStop(0.4, `rgba(${glowRGBA},${dark ? 0.04 : 0.025})`)
+        grd.addColorStop(0,   `rgba(${glowRGBA},${dark ? 0.13 : 0.09})`)
+        grd.addColorStop(0.4, `rgba(${glowRGBA},${dark ? 0.05 : 0.03})`)
         grd.addColorStop(1,   `rgba(${glowRGBA},0)`)
         ctx.fillStyle = grd
         ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -149,14 +169,14 @@ export default function HeroCanvas() {
     spawnParticles()
     draw()
 
-    canvas.addEventListener('mousemove',  onMouseMove)
-    canvas.addEventListener('mouseleave', onMouseLeave)
+    window.addEventListener('pointermove', onPointerMove)
+    window.addEventListener('mouseleave', onPointerLeaveWindow)
     window.addEventListener('resize',     onResize)
 
     return () => {
       cancelAnimationFrame(raf)
-      canvas.removeEventListener('mousemove',  onMouseMove)
-      canvas.removeEventListener('mouseleave', onMouseLeave)
+      window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('mouseleave', onPointerLeaveWindow)
       window.removeEventListener('resize',     onResize)
     }
   }, [])
@@ -164,7 +184,7 @@ export default function HeroCanvas() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-auto"
+      className="absolute inset-0 w-full h-full pointer-events-none"
       aria-hidden="true"
     />
   )
