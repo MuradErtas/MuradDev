@@ -10,7 +10,15 @@ interface Particle {
   size: number
 }
 
-const PARTICLE_COUNT = 120
+// Particle count scales with viewport width to avoid crowding on small screens
+const particleCount = () => {
+  if (typeof window === 'undefined') return 120
+  const w = window.innerWidth
+  if (w < 480)  return 45
+  if (w < 768)  return 70
+  if (w < 1024) return 95
+  return 120
+}
 const MAX_CONN_DIST  = 160   // px — max distance to draw a line
 const MOUSE_RADIUS   = 160   // px — mouse attraction radius
 const MAX_SPEED      = 1.2
@@ -41,7 +49,7 @@ export default function HeroCanvas() {
 
     const spawnParticles = () => {
       particles.length = 0
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
+      for (let i = 0; i < particleCount(); i++) {
         particles.push({
           x:    Math.random() * canvas.width,
           y:    Math.random() * canvas.height,
@@ -53,8 +61,10 @@ export default function HeroCanvas() {
     }
 
     /* ── event handlers ── */
+    // Use mousemove on window (not pointermove, not canvas).
+    // - mousemove never fires during touch or scroll, so mobile is unaffected.
+    // - canvas has pointer-events:none in CSS so listeners on it never fire anyway.
     const onMouseMove = (e: MouseEvent) => {
-      // mousemove never fires on touch/scroll — naturally immune to mobile chaos
       const r = canvas.getBoundingClientRect()
       const x = e.clientX - r.left
       const y = e.clientY - r.top
@@ -70,12 +80,10 @@ export default function HeroCanvas() {
       mouseX = -9999
       mouseY = -9999
     }
-
-    // Debounce resize so mobile address-bar hide/show doesn't thrash the canvas
     let resizeTimer: ReturnType<typeof setTimeout>
     const onResize = () => {
       clearTimeout(resizeTimer)
-      resizeTimer = setTimeout(() => { resize(); spawnParticles() }, 150)
+      resizeTimer = setTimeout(() => { resize() }, 200)
     }
 
     /* ── main draw loop ── */
@@ -176,15 +184,15 @@ export default function HeroCanvas() {
     spawnParticles()
     draw()
 
-    canvas.addEventListener('mousemove',  onMouseMove)
-    canvas.addEventListener('mouseleave', onMouseLeave)
+    window.addEventListener('mousemove',  onMouseMove)
+    window.addEventListener('mouseleave', onMouseLeave)
     window.addEventListener('resize',     onResize)
 
     return () => {
       cancelAnimationFrame(raf)
       clearTimeout(resizeTimer)
-      canvas.removeEventListener('mousemove',  onMouseMove)
-      canvas.removeEventListener('mouseleave', onMouseLeave)
+      window.removeEventListener('mousemove',  onMouseMove)
+      window.removeEventListener('mouseleave', onMouseLeave)
       window.removeEventListener('resize',     onResize)
     }
   }, [])
