@@ -305,15 +305,21 @@ export default function Home() {
           <div className="animate-fade-up flex flex-wrap gap-3 md:gap-4 justify-center" style={{ animationDelay: '0.46s' }}>
             <button
               onClick={() => window.open('https://www.linkedin.com/in/abdullah-murad-ertaskin/', '_blank')}
-              className="shimmer-btn px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 hover:scale-105 transition-all"
+              className="shimmer-btn px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 hover:scale-105 transition-all inline-flex items-center gap-2 leading-none"
             >
-              LinkedIn
+              <svg className="w-5 h-5 shrink-0 -translate-y-0.5" viewBox="0 0 24 26" fill="currentColor" aria-hidden="true">
+                <path d="M4.98 3.5C4.98 4.88 3.87 6 2.49 6S0 4.88 0 3.5 1.11 1 2.49 1s2.49 1.12 2.49 2.5ZM.5 8h4V24h-4V8Zm7 0h3.83v2.18h.05c.53-1.01 1.84-2.08 3.79-2.08 4.05 0 4.8 2.67 4.8 6.14V24h-4v-7.98c0-1.9-.03-4.35-2.65-4.35-2.65 0-3.06 2.07-3.06 4.21V24h-4V8Z" />
+              </svg>
+              <span className="leading-none">LinkedIn</span>
             </button>
             <button
               onClick={() => window.open('https://github.com/MuradErtas', '_blank')}
-              className="shimmer-btn px-8 py-3 border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 font-semibold hover:scale-105 transition-all"
+              className="shimmer-btn px-6 py-3 border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 font-semibold hover:scale-105 transition-all inline-flex items-center gap-2 leading-none"
             >
-              GitHub
+              <svg className="w-5 h-5 shrink-0 -translate-y-0.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 .5A12 12 0 0 0 8.2 23.9c.6.1.82-.26.82-.58v-2.04c-3.34.73-4.04-1.42-4.04-1.42-.55-1.38-1.33-1.75-1.33-1.75-1.1-.74.08-.72.08-.72 1.2.08 1.83 1.24 1.83 1.24 1.08 1.84 2.83 1.31 3.52 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.39 1.24-3.23-.12-.3-.54-1.53.12-3.18 0 0 1.01-.32 3.3 1.23a11.4 11.4 0 0 1 6.01 0c2.28-1.55 3.29-1.23 3.29-1.23.66 1.65.24 2.88.12 3.18.77.84 1.24 1.92 1.24 3.23 0 4.61-2.8 5.62-5.48 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.22.69.83.57A12 12 0 0 0 12 .5Z" />
+              </svg>
+              <span className="leading-none">GitHub</span>
             </button>
           </div>
 
