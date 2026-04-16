@@ -54,11 +54,13 @@ export default function HeroCanvas() {
 
     /* ── event handlers ── */
     const onPointerMove = (e: PointerEvent) => {
+      // Ignore touch — on mobile a tap permanently locks particles to that
+      // spot because there is no matching "leave" event when the finger lifts.
+      if (e.pointerType === 'touch') return
+
       const r = canvas.getBoundingClientRect()
       const x = e.clientX - r.left
       const y = e.clientY - r.top
-      // Track pointer anywhere on screen, but only activate
-      // the canvas interaction when pointer is inside hero canvas.
       if (x >= 0 && x <= canvas.width && y >= 0 && y <= canvas.height) {
         mouseX = x
         mouseY = y
@@ -67,7 +69,11 @@ export default function HeroCanvas() {
         mouseY = -9999
       }
     }
-    const onPointerLeaveWindow = () => { mouseX = -9999; mouseY = -9999 }
+    const onPointerLeaveWindow = (e: PointerEvent) => {
+      if (e.pointerType === 'touch') return
+      mouseX = -9999
+      mouseY = -9999
+    }
 
     const onResize = () => { resize(); spawnParticles() }
 
@@ -169,14 +175,14 @@ export default function HeroCanvas() {
     spawnParticles()
     draw()
 
-    window.addEventListener('pointermove', onPointerMove)
-    window.addEventListener('mouseleave', onPointerLeaveWindow)
+    window.addEventListener('pointermove',  onPointerMove)
+    window.addEventListener('pointerleave', onPointerLeaveWindow)
     window.addEventListener('resize',     onResize)
 
     return () => {
       cancelAnimationFrame(raf)
-      window.removeEventListener('pointermove', onPointerMove)
-      window.removeEventListener('mouseleave', onPointerLeaveWindow)
+      window.removeEventListener('pointermove',  onPointerMove)
+      window.removeEventListener('pointerleave', onPointerLeaveWindow)
       window.removeEventListener('resize',     onResize)
     }
   }, [])
