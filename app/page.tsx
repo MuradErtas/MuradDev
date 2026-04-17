@@ -92,9 +92,9 @@ const FEATURED_PROJECTS = [
 const NAV_ITEMS = [
   { label: 'Home',     id: 'home'     },
   { label: 'About',    id: 'about'    },
+  { label: 'Projects', id: 'projects' },
   { label: 'Skills',   id: 'skills'   },
   { label: 'Timeline', id: 'timeline' },
-  { label: 'Projects', id: 'projects' },
   { label: 'CV',       id: 'cv'       },
   { label: 'Contact',  id: 'contact'  },
 ]
@@ -339,7 +339,7 @@ export default function Home() {
       </section>
 
       {/* ── About ── */}
-      <section id="about" className="py-20 px-6 bg-white/50 dark:bg-slate-800/50 relative z-10">
+      <section id="about" className="py-20 px-6 bg-white/95 dark:bg-slate-800/95 relative z-10">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-bold mb-8 text-center animate-on-scroll">About Me</h2>
           <div className="animate-on-scroll space-y-4" style={{ transitionDelay: '0.1s' }}>
@@ -356,74 +356,6 @@ export default function Home() {
             <p className="text-slate-700 dark:text-slate-300 leading-relaxed text-lg">
               Thanks for checking out my portfolio!
             </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Tech Stack ── */}
-      <section id="skills" className="py-20 px-6 relative z-10">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl font-bold mb-3 text-center animate-on-scroll">Tech Stack</h2>
-          <p className="animate-on-scroll text-slate-500 dark:text-slate-400 text-center mb-10" style={{ transitionDelay: '0.08s' }}>
-            Tools &amp; technologies I work with
-          </p>
-          <div className="flex flex-wrap gap-3 justify-center">
-            {TECH_STACK.map((tech, i) => (
-              <span
-                key={tech.name}
-                className={`animate-on-scroll tech-badge bg-gradient-to-r ${tech.gradient} text-white px-4 py-2 rounded-full font-medium text-sm shadow-md`}
-                style={{ transitionDelay: `${0.05 + i * 0.045}s` }}
-              >
-                {tech.name}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Timeline ── */}
-      <section id="timeline" className="py-20 px-6 bg-white/50 dark:bg-slate-800/50 relative z-10">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-4xl font-bold mb-3 text-center animate-on-scroll">Experience &amp; Education</h2>
-          <p className="animate-on-scroll text-slate-500 dark:text-slate-400 text-center mb-12" style={{ transitionDelay: '0.08s' }}>
-            Where I&apos;ve been and what I&apos;ve done
-          </p>
-
-          <div className="relative">
-            {/* Vertical line */}
-            <div className="timeline-line" />
-
-            <div className="space-y-10 pl-10">
-              {TIMELINE.map((item, i) => (
-                <div
-                  key={i}
-                  className="animate-on-scroll relative"
-                  style={{ transitionDelay: `${0.1 + i * 0.15}s` }}
-                >
-                  {/* Dot */}
-                  <div className={`timeline-dot bg-gradient-to-br ${item.dotColor}`} />
-
-                  {/* Card */}
-                  <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-md border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-shadow">
-                    <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
-                      <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-100">{item.role}</h3>
-                      <span className="text-sm font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
-                        {item.period}
-                      </span>
-                    </div>
-                    <p className="text-blue-600 dark:text-blue-400 font-medium mb-3">{item.org}</p>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">{item.desc}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {item.tags.map(tag => (
-                        <span key={tag} className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded text-xs font-medium">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>
@@ -472,8 +404,76 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Tech Stack ── */}
+      <section id="skills" className="py-20 px-6 bg-white/95 dark:bg-slate-800/95 relative z-10">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-4xl font-bold mb-3 text-center animate-on-scroll">Tech Stack</h2>
+          <p className="animate-on-scroll text-slate-500 dark:text-slate-400 text-center mb-10" style={{ transitionDelay: '0.08s' }}>
+            Tools &amp; technologies I work with
+          </p>
+          <div className="flex flex-wrap gap-3 justify-center">
+            {TECH_STACK.map((tech, i) => (
+              <span
+                key={tech.name}
+                className={`animate-on-scroll tech-badge bg-gradient-to-r ${tech.gradient} text-white px-4 py-2 rounded-full font-medium text-sm shadow-md`}
+                style={{ transitionDelay: `${0.05 + i * 0.045}s` }}
+              >
+                {tech.name}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Timeline ── */}
+      <section id="timeline" className="py-20 px-6 relative z-10">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-4xl font-bold mb-3 text-center animate-on-scroll">Experience &amp; Education</h2>
+          <p className="animate-on-scroll text-slate-500 dark:text-slate-400 text-center mb-12" style={{ transitionDelay: '0.08s' }}>
+            Where I&apos;ve been and what I&apos;ve done
+          </p>
+
+          <div className="relative">
+            {/* Vertical line */}
+            <div className="timeline-line" />
+
+            <div className="space-y-10 pl-10">
+              {TIMELINE.map((item, i) => (
+                <div
+                  key={i}
+                  className="animate-on-scroll relative"
+                  style={{ transitionDelay: `${0.1 + i * 0.15}s` }}
+                >
+                  {/* Dot */}
+                  <div className={`timeline-dot bg-gradient-to-br ${item.dotColor}`} />
+
+                  {/* Card */}
+                  <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-md border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-shadow">
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
+                      <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-100">{item.role}</h3>
+                      <span className="text-sm font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
+                        {item.period}
+                      </span>
+                    </div>
+                    <p className="text-blue-600 dark:text-blue-400 font-medium mb-3">{item.org}</p>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">{item.desc}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {item.tags.map(tag => (
+                        <span key={tag} className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded text-xs font-medium">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── CV ── */}
-      <section id="cv" className="py-20 px-6 bg-white/50 dark:bg-slate-800/50 relative z-10">
+      <section id="cv" className="py-20 px-6 bg-white/95 dark:bg-slate-800/95 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-bold mb-6 animate-on-scroll">Resume / CV</h2>
           <p className="animate-on-scroll text-slate-700 dark:text-slate-300 mb-8 text-lg" style={{ transitionDelay: '0.1s' }}>
@@ -577,7 +577,7 @@ export default function Home() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="py-8 px-6 border-t border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 relative z-10">
+      <footer className="py-8 px-6 border-t border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-800/95 relative z-10">
         <div className="max-w-6xl mx-auto text-center text-slate-500 dark:text-slate-400 text-sm">
           <p>© {new Date().getFullYear()} MuradDev. All rights reserved.</p>
         </div>

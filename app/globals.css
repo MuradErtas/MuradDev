@@ -92,12 +92,12 @@ html.dark * { scrollbar-color: #334155 #0f172a; }
 .orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.05;
+  filter: blur(88px);
+  opacity: 0.8;
   pointer-events: none;
   will-change: transform;
 }
-html.dark .orb { opacity: 0.1; }
+html.dark .orb { opacity: 0.4; }
 
 @keyframes float-a {
   0%,  100% { transform: translate(0px,   0px)    scale(1);    }
