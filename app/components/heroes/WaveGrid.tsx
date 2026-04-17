@@ -5,13 +5,12 @@ import { useRef, useEffect } from 'react'
 /* ── tunables ─────────────────────────────────────────────────── */
 const COLS         = 48    // horizontal grid resolution
 const ROWS         = 30    // depth grid resolution
-const HORIZON      = 0  // horizon as fraction of canvas height
-const PERSPECTIVE  = 1   // how strongly the grid converges (higher = more dramatic)
-const HEIGHT_SCALE = 0.1  // how tall the waves appear (fraction of canvas height)
-const GRID_WIDTH   = 3.6  // world-space width multiplier — makes the grid wider than
-                            // the canvas so it fills the sides even at mid-depth
+const HORIZON      = 0     // horizon as fraction of canvas height
+const PERSPECTIVE  = 1     // how strongly the grid converges (higher = more dramatic)
+const HEIGHT_SCALE = 0.1   // how tall the waves appear (fraction of canvas height)
+const GRID_WIDTH   = 3.6   // world-space width multiplier
 const N_BUCKETS    = 22    // colour buckets — trades smoothness for fewer draw calls
-const MAX_RIPPLES  = 5
+const MAX_RIPPLES  = 6
 
 interface Ripple { gx: number; gz: number; t0: number; amp: number }
 
@@ -46,7 +45,7 @@ export default function WaveGrid() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    let mouseGX = -1, mouseGZ = -1   // grid-space mouse position (0-1)
+    let mouseGX = -1, mouseGZ = -1
     let raf: number
     const ripples: Ripple[] = []
     let nextRippleAt = 1.5
@@ -56,18 +55,36 @@ export default function WaveGrid() {
       canvas.height = canvas.offsetHeight
     }
 
-    const onMouseMove = (e: MouseEvent) => {
+    // Invert the perspective projection: screen (sx, sy) → grid (gx, gz)
+    const screenToGrid = (clientX: number, clientY: number): [number, number] => {
       const rect = canvas.getBoundingClientRect()
-      const mx = (e.clientX - rect.left) / canvas.width
-      const my = (e.clientY - rect.top)  / canvas.height
-
-      // Approximate inverse-perspective mapping from screen → grid space
-      // gz=0 far (horizon), gz=1 near (bottom)
-      const horizonFrac = HORIZON
-      mouseGX = mx
-      mouseGZ = Math.max(0, Math.min(1, (my - horizonFrac) / (1 - horizonFrac)))
+      const sx = clientX - rect.left
+      const sy = clientY - rect.top
+      const W  = canvas.width, H = canvas.height
+      // gz from screen y (linear approximation of inverse perspective)
+      const gz = Math.max(0, Math.min(1, (sy / H - HORIZON) / (1 - HORIZON)))
+      // undo the perspective x scaling: sx = W/2 + (gx-0.5)*W*GRID_WIDTH*perspScale
+      const perspScale = 1 / (1 + (1 - gz) * PERSPECTIVE)
+      const gx = 0.5 + (sx - W / 2) / (W * GRID_WIDTH * perspScale)
+      return [gx, gz]
     }
+
+    const onMouseMove = (e: MouseEvent) => {
+      ;[mouseGX, mouseGZ] = screenToGrid(e.clientX, e.clientY)
+    }
+
     const onMouseLeave = () => { mouseGX = -1 }
+
+    const onClick = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect()
+      if (
+        e.clientX < rect.left || e.clientX > rect.right ||
+        e.clientY < rect.top  || e.clientY > rect.bottom
+      ) return
+      const [gx, gz] = screenToGrid(e.clientX, e.clientY)
+      ripples.push({ gx, gz, t0: performance.now() * 0.001, amp: 0.4})
+      if (ripples.length > MAX_RIPPLES) ripples.shift()
+    }
 
     let resizeTimer: ReturnType<typeof setTimeout>
     const onResize = () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(resize, 200) }
@@ -75,7 +92,6 @@ export default function WaveGrid() {
     /* ── project grid → screen ───────────────────────────────── */
     const project = (gx: number, gz: number, gy: number): [number, number] => {
       const W = canvas.width, H = canvas.height
-      // gz=0 is far (near horizon), gz=1 is near (bottom of canvas)
       const perspScale = 1 / (1 + (1 - gz) * PERSPECTIVE)
       const horizonY   = H * HORIZON
       const sy_base    = horizonY + gz * (H - horizonY)
@@ -89,11 +105,10 @@ export default function WaveGrid() {
       const x = (col / COLS) * Math.PI * 5
       const z = (row / ROWS) * Math.PI * 4
 
-      // Two overlapping traveling waves
       const h1 = Math.sin(x * 0.7 + t * 0.85) * Math.cos(z * 0.5 - t * 0.65) * 0.42
       const h2 = Math.cos(x * 0.45 - t * 0.55 + z * 0.35) * Math.sin(z * 0.75 + t * 0.5) * 0.30
 
-      let h = h1 + h2   // approx -0.72 … 0.72
+      let h = h1 + h2
 
       // Ripple contributions
       for (const rip of ripples) {
@@ -101,10 +116,10 @@ export default function WaveGrid() {
         if (dt < 0) continue
         const dx = (col / COLS) - rip.gx
         const dz = (row / ROWS) - rip.gz
-        const dist    = Math.sqrt(dx * dx + dz * dz)
-        const front   = dt * 0.55               // wavefront radius
-        const delta   = dist - front            // signed dist from wavefront
-        const decay   = Math.exp(-dt * 0.9) * Math.exp(-delta * delta * 28)
+        const dist  = Math.sqrt(dx * dx + dz * dz)
+        const front = dt * 0.55
+        const delta = dist - front
+        const decay = Math.exp(-dt * 0.9) * Math.exp(-delta * delta * 28)
         h += rip.amp * decay * Math.sin(delta * 22)
       }
 
@@ -135,28 +150,25 @@ export default function WaveGrid() {
         nextRippleAt = t + 1.8 + Math.random() * 2.8
       }
 
-      // Pre-compute all heights (avoids redundant recalculation per segment)
+      // Pre-compute all heights
       const H2D: number[][] = Array.from({ length: ROWS + 1 }, (_, row) =>
         Array.from({ length: COLS + 1 }, (_, col) => waveHeight(col, row, t))
       )
 
-      // Build Path2D colour buckets (avoids thousands of individual stroke() calls)
+      // Build Path2D colour buckets
       const buckets = Array.from({ length: N_BUCKETS }, () => new Path2D())
 
       const addSegment = (h_avg: number, sx1: number, sy1: number, sx2: number, sy2: number) => {
-        // Map height -1…1 to 0…1
-        const hn  = Math.max(0, Math.min(1, (h_avg + 1) / 2))
-        const bk  = Math.min(N_BUCKETS - 1, Math.floor(hn * N_BUCKETS))
+        const hn = Math.max(0, Math.min(1, (h_avg + 1) / 2))
+        const bk = Math.min(N_BUCKETS - 1, Math.floor(hn * N_BUCKETS))
         buckets[bk].moveTo(sx1, sy1)
         buckets[bk].lineTo(sx2, sy2)
       }
 
-      // Horizontal rows — draw far→near so near rows paint over far rows
+      // Horizontal rows — far → near
       for (let row = 0; row <= ROWS; row++) {
         const gz = row / ROWS
-        // Skip the very far rows that would be above/at the horizon (just clutter)
         if (gz < 0.05) continue
-
         for (let col = 0; col < COLS; col++) {
           const h1 = H2D[row][col], h2 = H2D[row][col + 1]
           const [sx1, sy1] = project(col / COLS,       gz, h1)
@@ -177,12 +189,11 @@ export default function WaveGrid() {
         }
       }
 
-      // Render all buckets in a single pass (N_BUCKETS stroke() calls total)
+      // Render all buckets in a single pass
       ctx.lineWidth = 0.85
       for (let b = 0; b < N_BUCKETS; b++) {
         const hn = b / (N_BUCKETS - 1)
         const [r, g, bv] = rampColor(hn)
-        // Lines near peaks are fully opaque; base lines are more transparent
         const alpha = 0.22 + hn * 0.72
         ctx.strokeStyle = `rgba(${r},${g},${bv},${alpha})`
         ctx.stroke(buckets[b])
@@ -190,9 +201,9 @@ export default function WaveGrid() {
 
       // Subtle horizon glow
       const hGrad = ctx.createLinearGradient(0, H * HORIZON - 4, 0, H * HORIZON + 4)
-      hGrad.addColorStop(0, 'rgba(180,40,255,0)')
+      hGrad.addColorStop(0,   'rgba(180,40,255,0)')
       hGrad.addColorStop(0.5, 'rgba(200,60,255,0.55)')
-      hGrad.addColorStop(1, 'rgba(180,40,255,0)')
+      hGrad.addColorStop(1,   'rgba(180,40,255,0)')
       ctx.fillStyle = hGrad
       ctx.fillRect(0, H * HORIZON - 4, W, 8)
 
@@ -211,12 +222,14 @@ export default function WaveGrid() {
     resize(); draw()
     window.addEventListener('mousemove',  onMouseMove)
     window.addEventListener('mouseleave', onMouseLeave)
+    window.addEventListener('click',      onClick)
     window.addEventListener('resize',     onResize)
 
     return () => {
       cancelAnimationFrame(raf); clearTimeout(resizeTimer)
       window.removeEventListener('mousemove',  onMouseMove)
       window.removeEventListener('mouseleave', onMouseLeave)
+      window.removeEventListener('click',      onClick)
       window.removeEventListener('resize',     onResize)
     }
   }, [])
