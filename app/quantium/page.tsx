@@ -1,38 +1,30 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import SiteChrome from '../components/SiteChrome'
 
 export default function QuantiumPage() {
-  const router = useRouter()
   const githubUrl = 'https://github.com/MuradErtas'
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex flex-col">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md z-50 border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <button
-              onClick={() => router.push('/')}
-              className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
-            >
-              MuradDev
-            </button>
-            <button
-              onClick={() => router.push('/')}
-              className="px-4 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-            >
-              Back to Home
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col max-w-7xl mx-auto w-full px-6 pt-24 pb-6">
+    <SiteChrome
+      footerExtra={(
+        <p>
+          <a
+            href={githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+          >
+            GitHub
+          </a>
+          {' '}repository for this project.
+        </p>
+      )}
+    >
+      <div className="flex flex-col max-w-7xl mx-auto w-full px-6 pt-32 pb-6">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <h1 className="project-page-h1">
             Quantium Data Analytics
           </h1>
           <p className="text-center text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-6">
@@ -88,7 +80,7 @@ export default function QuantiumPage() {
         {/* Project Overview */}
         <div className="mb-8">
           <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
-            <h2 className="text-2xl font-semibold mb-4 text-slate-700 dark:text-slate-300">Project Overview</h2>
+            <h2 className="project-section-h2">Project Overview</h2>
             <div className="space-y-4 text-slate-600 dark:text-slate-400">
               <p className="leading-relaxed">
                 This project was completed as part of a Quantium job simulation, where I was tasked with processing 
@@ -123,7 +115,7 @@ export default function QuantiumPage() {
         {/* Data Transformation Showcase */}
         <div className="mb-8">
           <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
-            <h2 className="text-2xl font-semibold mb-6 text-slate-700 dark:text-slate-300">Data Transformation</h2>
+            <h2 className="project-section-h2">Data Transformation</h2>
             
             {/* Before/After Comparison */}
             <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -295,7 +287,7 @@ df.to_csv('data/pink_morsel_sales.csv', index=False)`}</code>
         {/* About Section */}
         <div className="mb-8">
           <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
-            <h2 className="text-3xl font-bold mb-6 text-slate-700 dark:text-slate-300">About This Project</h2>
+            <h2 className="project-section-h2">About This Project</h2>
             
             <div className="space-y-6 text-slate-600 dark:text-slate-400">
               <div>
@@ -363,14 +355,6 @@ df.to_csv('data/pink_morsel_sales.csv', index=False)`}</code>
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="py-8 px-6 border-t border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50">
-        <div className="max-w-7xl mx-auto text-center text-slate-600 dark:text-slate-400">
-          <p>© {new Date().getFullYear()} MuradDev. All rights reserved.</p>
-          <a href="https://github.com/MuradErtas" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">GitHub</a> repository for this project.
-        </div>
-      </footer>
-    </div>
+    </SiteChrome>
   )
 }

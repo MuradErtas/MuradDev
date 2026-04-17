@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import emailjs from '@emailjs/browser'
 import ThemeToggle from './components/ThemeToggle'
 import WaveGrid    from './components/heroes/WaveGrid'
+import { PORTFOLIO_NAV_ITEMS as NAV_ITEMS } from './constants/portfolioNav'
 
 /* ── Data ─────────────────────────────────────── */
 
@@ -87,16 +88,6 @@ const FEATURED_PROJECTS = [
       { label: 'Dash',   color: 'bg-green-100  dark:bg-green-900/30  text-green-700  dark:text-green-300'  },
     ],
   },
-]
-
-const NAV_ITEMS = [
-  { label: 'Home',     id: 'home'     },
-  { label: 'About',    id: 'about'    },
-  { label: 'Projects', id: 'projects' },
-  { label: 'Skills',   id: 'skills'   },
-  { label: 'Timeline', id: 'timeline' },
-  { label: 'CV',       id: 'cv'       },
-  { label: 'Contact',  id: 'contact'  },
 ]
 
 /* ── Component ─────────────────────────────────── */

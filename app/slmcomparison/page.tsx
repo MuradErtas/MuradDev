@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import SiteChrome from '../components/SiteChrome'
 
 interface Message {
   id: string
@@ -11,7 +11,6 @@ interface Message {
 }
 
 export default function SLMComparisonPage() {
-  const router = useRouter()
   const githubUrl = 'https://github.com/MuradErtas/SLM-Comparison--RNN-vs.-Transformer'
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
@@ -120,36 +119,28 @@ export default function SLMComparisonPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex flex-col">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md z-50 border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <button
-              onClick={() => router.push('/')}
-              className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
-            >
-              MuradDev
-            </button>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => router.push('/')}
-                className="px-4 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-              >
-                Back to Home
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Header */}
-      <div className="pt-24 pb-6 px-6">
+    <SiteChrome
+      footerExtra={(
+        <p>
+          <a
+            href={githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+          >
+            GitHub
+          </a>
+          {' '}repository for this project.
+        </p>
+      )}
+    >
+      <div className="flex flex-col">
+      <div className="pt-32 pb-6 px-6">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold mb-2 text-center bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <h1 className="project-page-h1">
             SLM Comparison
           </h1>
-          <p className="text-center text-slate-600 dark:text-slate-300 mb-6">
+          <p className="text-center text-slate-600 dark:text-slate-300 mb-6 max-w-3xl mx-auto">
             Compare Transformer and RNN small language model responses side by side, trained on the same dataset (Shakespeare's plays) with the same hyperparameters. Built from scratch using PyTorch with a custom tokeniser, see GitHub repository for more details.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
@@ -295,7 +286,7 @@ export default function SLMComparisonPage() {
         {/* About Section */}
         <div className="mt-12 mb-8">
           <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
-            <h2 className="text-3xl font-bold mb-6 text-slate-700 dark:text-slate-300">About This Project</h2>
+            <h2 className="project-section-h2">About This Project</h2>
             
             <div className="space-y-6 text-slate-600 dark:text-slate-400">
               <div>
@@ -351,12 +342,7 @@ export default function SLMComparisonPage() {
         </div>
 
       </div>
-        {/* Footer */}
-        <footer className="py-8 px-6 border-t border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50">
-            <div className="max-w-7xl mx-auto text-center text-slate-600 dark:text-slate-400">
-                <p>© {new Date().getFullYear()} MuradDev. All rights reserved.</p> <a href="https://github.com/MuradErtas/SLM-Comparison--RNN-vs.-Transformer" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">GitHub</a> repository for this project.
-            </div>
-        </footer>
-    </div>
+      </div>
+    </SiteChrome>
   )
 }

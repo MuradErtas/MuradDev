@@ -227,6 +227,17 @@ html.dark .section-alt {
   background: rgba(30, 41, 59, 0.45);
 }
 
+@layer components {
+  /* Match `/projects` “My Projects” and keep all project detail titles consistent */
+  .project-page-h1 {
+    @apply text-5xl md:text-6xl font-extrabold mb-4 text-center animated-gradient-text leading-tight animate-fade-down;
+  }
+  /* Major section titles on project pages (e.g. “About This Project”) */
+  .project-section-h2 {
+    @apply text-4xl font-bold mb-6 text-center text-slate-800 dark:text-slate-200;
+  }
+}
+
 /* =================================================================
    HERO STYLE: AURORA
    ================================================================= */

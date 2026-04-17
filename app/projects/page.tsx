@@ -1,8 +1,8 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import ThemeToggle from '../components/ThemeToggle'
+import { useEffect } from 'react'
+import SiteChrome from '../components/SiteChrome'
 
 interface ProjectTag {
   name: string
@@ -94,7 +94,6 @@ const TAG_COLORS = {
 
 export default function ProjectsPage() {
   const router = useRouter()
-  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const obs = new IntersectionObserver(
@@ -105,78 +104,18 @@ export default function ProjectsPage() {
     return () => obs.disconnect()
   }, [])
 
-  useEffect(() => {
-    const onResize = () => { if (window.innerWidth >= 768) setMenuOpen(false) }
-    window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
-  }, [])
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 overflow-x-hidden">
-
-      {/* Floating orbs */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
-        <div className="orb orb-1" /><div className="orb orb-2" /><div className="orb orb-3" />
-        <div className="orb orb-4" /><div className="orb orb-5" />
-      </div>
-
-      {/* Mobile fullscreen menu */}
-      <div
-        className={`md:hidden fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 transition-all duration-300
-          bg-white/97 dark:bg-slate-950/97 backdrop-blur-md
-          ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-        aria-hidden={!menuOpen}
-      >
-        {[{ label: 'Home', action: () => router.push('/') }, { label: 'Projects', action: () => setMenuOpen(false) }].map(({ label, action }, i) => (
-          <button key={label} onClick={action}
-            className={`text-3xl font-bold text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300
-              ${menuOpen ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'}`}
-            style={{ transitionDelay: menuOpen ? `${i * 0.07}s` : '0s' }}>
-            {label}
-          </button>
-        ))}
-        <div className={`transition-all duration-300 ${menuOpen ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'}`}
-          style={{ transitionDelay: menuOpen ? '0.14s' : '0s' }}>
-          <ThemeToggle />
-        </div>
-      </div>
-
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md z-50 border-b border-slate-200 dark:border-slate-700">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <button
-            onClick={() => router.push('/')}
-            className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hover:scale-105 transition-transform"
-          >
-            MuradDev
-          </button>
-          <div className="hidden md:flex items-center gap-4">
-            <button onClick={() => router.push('/')} className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-              ← Home
-            </button>
-            <ThemeToggle />
-          </div>
-          <div className="md:hidden flex items-center gap-2">
-            <ThemeToggle />
-            <button onClick={() => setMenuOpen(o => !o)} aria-label="Toggle menu"
-              className="w-9 h-9 flex flex-col items-center justify-center gap-1.5 text-slate-600 dark:text-slate-300">
-              <span className={`block w-5 h-0.5 bg-current rounded transition-all duration-300 origin-center ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-              <span className={`block w-5 h-0.5 bg-current rounded transition-all duration-300 ${menuOpen ? 'opacity-0 scale-x-0' : ''}`} />
-              <span className={`block w-5 h-0.5 bg-current rounded transition-all duration-300 origin-center ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Projects grid */}
-      <section className="relative pt-32 pb-20 px-6 z-10">
+    <SiteChrome>
+      <section className="relative pt-32 pb-20 px-6">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-5xl md:text-6xl font-extrabold mb-4 text-center animated-gradient-text leading-tight animate-fade-down">
+          <h1 className="project-page-h1">
             My Projects
           </h1>
-          <p className="animate-fade-up text-xl text-slate-600 dark:text-slate-300 mb-14 text-center max-w-2xl mx-auto"
-            style={{ animationDelay: '0.2s' }}>
-            A collection of things I&apos;ve built — each one a step forward in my journey.
+          <p
+            className="animate-fade-up text-xl text-slate-600 dark:text-slate-300 mb-14 text-center max-w-2xl mx-auto"
+            style={{ animationDelay: '0.2s' }}
+          >
+            A collection of things I&apos;ve built, and the things they taught me.
           </p>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -189,10 +128,15 @@ export default function ProjectsPage() {
               >
                 <div className={`w-full h-44 bg-gradient-to-br ${project.image} rounded-lg mb-5 overflow-hidden relative`}>
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/8 transition-colors duration-300" />
-                  <div className="absolute inset-0 opacity-10"
-                    style={{ backgroundImage: 'repeating-linear-gradient(0deg,transparent,transparent 20px,rgba(255,255,255,.3) 20px,rgba(255,255,255,.3) 21px),repeating-linear-gradient(90deg,transparent,transparent 20px,rgba(255,255,255,.3) 20px,rgba(255,255,255,.3) 21px)' }} />
+                  <div
+                    className="absolute inset-0 opacity-10"
+                    style={{
+                      backgroundImage:
+                        'repeating-linear-gradient(0deg,transparent,transparent 20px,rgba(255,255,255,.3) 20px,rgba(255,255,255,.3) 21px),repeating-linear-gradient(90deg,transparent,transparent 20px,rgba(255,255,255,.3) 20px,rgba(255,255,255,.3) 21px)',
+                    }}
+                  />
                 </div>
-                <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                <h3 className="text-xl font-semibold mb-2 text-slate-800 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                   {project.title}
                 </h3>
                 <p className="text-slate-600 dark:text-slate-400 text-sm mb-4 leading-relaxed">{project.description}</p>
@@ -208,13 +152,6 @@ export default function ProjectsPage() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="py-8 px-6 border-t border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 relative z-10">
-        <div className="max-w-6xl mx-auto text-center text-slate-500 dark:text-slate-400 text-sm">
-          <p>© {new Date().getFullYear()} MuradDev. All rights reserved.</p>
-        </div>
-      </footer>
-    </div>
+    </SiteChrome>
   )
 }
