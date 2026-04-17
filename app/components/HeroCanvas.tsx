@@ -10,21 +10,23 @@ interface Particle {
   size: number
 }
 
-// Particle count scales with viewport width to avoid crowding on small screens
-const particleCount = () => {
-  if (typeof window === 'undefined') return 120
-  const w = window.innerWidth
-  if (w < 480)  return 45
-  if (w < 768)  return 70
-  if (w < 1024) return 95
-  return 120
-}
-const MAX_CONN_DIST  = 160   // px — max distance to draw a line
-const MOUSE_RADIUS   = 160   // px — mouse attraction radius
-const MAX_SPEED      = 1.2
+const MAX_CONN_DIST   = 140
+const MAX_CONN_DIST_2 = MAX_CONN_DIST * MAX_CONN_DIST  // avoid sqrt in hot loop
+const MOUSE_RADIUS    = 160
+const MAX_SPEED       = 1.2
 const WIND_X_STRENGTH = 0.002
 const WIND_Y_STRENGTH = 0.001
 const GUST_STRENGTH   = 0.0001
+
+// Particle count scales with viewport width
+const baseParticleCount = () => {
+  if (typeof window === 'undefined') return 80
+  const w = window.innerWidth
+  if (w < 480)  return 40
+  if (w < 768)  return 55
+  if (w < 1024) return 70
+  return 90   // reduced from 120 — fewer particles, same feel, much less GPU work
+}
 
 export default function HeroCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -39,6 +41,15 @@ export default function HeroCanvas() {
     let mouseY = -9999
     let raf: number
 
+    // Cache dark-mode flag — reading classList every frame is a DOM hit.
+    // Re-check every 60 frames (~1 s) so theme switches still propagate.
+    let dark = document.documentElement.classList.contains('dark')
+    let darkCheckCounter = 0
+
+    // Adaptive quality: track consecutive slow frames and shed particles.
+    let lastFrameTime = performance.now()
+    let slowStreak = 0
+
     const particles: Particle[] = []
 
     /* ── helpers ── */
@@ -49,7 +60,8 @@ export default function HeroCanvas() {
 
     const spawnParticles = () => {
       particles.length = 0
-      for (let i = 0; i < particleCount(); i++) {
+      const n = baseParticleCount()
+      for (let i = 0; i < n; i++) {
         particles.push({
           x:    Math.random() * canvas.width,
           y:    Math.random() * canvas.height,
@@ -61,9 +73,6 @@ export default function HeroCanvas() {
     }
 
     /* ── event handlers ── */
-    // Use mousemove on window (not pointermove, not canvas).
-    // - mousemove never fires during touch or scroll, so mobile is unaffected.
-    // - canvas has pointer-events:none in CSS so listeners on it never fire anyway.
     const onMouseMove = (e: MouseEvent) => {
       const r = canvas.getBoundingClientRect()
       const x = e.clientX - r.left
@@ -76,10 +85,8 @@ export default function HeroCanvas() {
         mouseY = -9999
       }
     }
-    const onMouseLeave = () => {
-      mouseX = -9999
-      mouseY = -9999
-    }
+    const onMouseLeave = () => { mouseX = -9999; mouseY = -9999 }
+
     let resizeTimer: ReturnType<typeof setTimeout>
     const onResize = () => {
       clearTimeout(resizeTimer)
@@ -88,27 +95,44 @@ export default function HeroCanvas() {
 
     /* ── main draw loop ── */
     const draw = () => {
+      const now = performance.now()
+      const dt  = now - lastFrameTime
+      lastFrameTime = now
+
+      // Adaptive quality: if we're consistently below ~40 fps, shed 10% of
+      // particles until things smooth out (floor: 25 particles).
+      if (dt > 25) {
+        if (++slowStreak > 8 && particles.length > 25) {
+          particles.splice(0, Math.ceil(particles.length * 0.1))
+          slowStreak = 0
+        }
+      } else {
+        slowStreak = 0
+      }
+
+      // Re-read dark mode from DOM at ~1 fps cadence
+      if (++darkCheckCounter >= 60) {
+        dark = document.documentElement.classList.contains('dark')
+        darkCheckCounter = 0
+      }
+
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      const t = performance.now() * 0.001
+      const t = now * 0.001
 
-      const dark       = document.documentElement.classList.contains('dark')
-      const baseAlpha  = dark ? 0.52 : 0.40
-      const dotRGBA    = dark ? '148,163,184' : '79,70,229'   // slate-400 | indigo-600
-      const lineRGBA   = dark ? '148,163,184' : '79,70,229'
+      const dotRGBA  = dark ? '148,163,184' : '79,70,229'
+      const lineRGBA = dark ? '148,163,184' : '79,70,229'
+      const baseAlpha = dark ? 0.52 : 0.40
 
-      /* update */
+      /* ── update particle positions ── */
       for (const p of particles) {
-        // Smooth autonomous drift so the constellation feels alive.
         const windX = Math.sin(t * 0.45 + p.y * 0.02) * WIND_X_STRENGTH
         const windY = Math.cos(t * 0.35 + p.x * 0.015) * WIND_Y_STRENGTH
-        const gust  = Math.sin(t * 0.22) * GUST_STRENGTH
-        p.vx += windX + gust
+        p.vx += windX + Math.sin(t * 0.22) * GUST_STRENGTH
         p.vy += windY
 
         const dx   = mouseX - p.x
         const dy   = mouseY - p.y
         const dist = Math.hypot(dx, dy)
-
         if (dist < MOUSE_RADIUS && dist > 0) {
           const force = ((MOUSE_RADIUS - dist) / MOUSE_RADIUS) * 0.018
           p.vx += (dx / dist) * force
@@ -119,53 +143,70 @@ export default function HeroCanvas() {
         p.vy *= 0.992
 
         const speed = Math.hypot(p.vx, p.vy)
-        if (speed > MAX_SPEED) {
-          p.vx = (p.vx / speed) * MAX_SPEED
-          p.vy = (p.vy / speed) * MAX_SPEED
-        }
+        if (speed > MAX_SPEED) { p.vx = (p.vx / speed) * MAX_SPEED; p.vy = (p.vy / speed) * MAX_SPEED }
 
         p.x += p.vx
         p.y += p.vy
 
-        /* wrap */
-        if (p.x < -10)              p.x = canvas.width  + 10
-        if (p.x > canvas.width + 10) p.x = -10
-        if (p.y < -10)              p.y = canvas.height + 10
+        if (p.x < -10)                p.x = canvas.width  + 10
+        if (p.x > canvas.width  + 10) p.x = -10
+        if (p.y < -10)                p.y = canvas.height + 10
         if (p.y > canvas.height + 10) p.y = -10
       }
 
-      /* connections */
+      /* ── connections — batched into 3 Path2D objects (3 stroke() calls total)
+             instead of one ctx.stroke() per line (~thousands of calls).
+             Lines are bucketed by distance into far / mid / close alpha groups. ── */
+      const pathFar  = new Path2D()
+      const pathMid  = new Path2D()
+      const pathNear = new Path2D()
+
       for (let i = 0; i < particles.length; i++) {
+        const ax = particles[i].x, ay = particles[i].y
         for (let j = i + 1; j < particles.length; j++) {
-          const dx   = particles[i].x - particles[j].x
-          const dy   = particles[i].y - particles[j].y
-          const dist = Math.hypot(dx, dy)
-          if (dist < MAX_CONN_DIST) {
-            const alpha = (1 - dist / MAX_CONN_DIST) * 0.34
-            ctx.beginPath()
-            ctx.moveTo(particles[i].x, particles[i].y)
-            ctx.lineTo(particles[j].x, particles[j].y)
-            ctx.strokeStyle = `rgba(${lineRGBA},${alpha})`
-            ctx.lineWidth   = 0.9
-            ctx.stroke()
+          const dx2 = ax - particles[j].x
+          const dy2 = ay - particles[j].y
+          const d2  = dx2 * dx2 + dy2 * dy2   // skip sqrt until we know we're in range
+          if (d2 < MAX_CONN_DIST_2) {
+            const ratio = d2 / MAX_CONN_DIST_2  // 0 = very close, 1 = at edge
+            const path  = ratio < 0.11 ? pathNear : ratio < 0.44 ? pathMid : pathFar
+            path.moveTo(ax, ay)
+            path.lineTo(particles[j].x, particles[j].y)
           }
         }
       }
 
-      /* dots */
+      ctx.lineWidth = 0.9
+      ctx.strokeStyle = `rgba(${lineRGBA},0.10)`; ctx.stroke(pathFar)
+      ctx.strokeStyle = `rgba(${lineRGBA},0.22)`; ctx.stroke(pathMid)
+      ctx.strokeStyle = `rgba(${lineRGBA},0.38)`; ctx.stroke(pathNear)
+
+      /* ── dots — two batched fill() calls (normal + mouse-brightened) ── */
+      // Normal dots
+      ctx.fillStyle = `rgba(${dotRGBA},${baseAlpha})`
+      ctx.beginPath()
       for (const p of particles) {
-        const dxm   = mouseX - p.x
-        const dym   = mouseY - p.y
-        const mDist = Math.hypot(dxm, dym)
-        const alpha = mDist < 100 ? baseAlpha + (1 - mDist / 100) * 0.50 : baseAlpha
-
-        ctx.beginPath()
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(${dotRGBA},${alpha})`
-        ctx.fill()
+        const dxm = mouseX - p.x, dym = mouseY - p.y
+        if (dxm * dxm + dym * dym >= 100 * 100) {
+          ctx.moveTo(p.x + p.size, p.y)
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+        }
       }
+      ctx.fill()
 
-      /* mouse glow ring — inside canvas only */
+      // Brightened dots near cursor
+      ctx.fillStyle = `rgba(${dotRGBA},${Math.min(baseAlpha + 0.45, 1)})`
+      ctx.beginPath()
+      for (const p of particles) {
+        const dxm = mouseX - p.x, dym = mouseY - p.y
+        if (dxm * dxm + dym * dym < 100 * 100) {
+          ctx.moveTo(p.x + p.size, p.y)
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+        }
+      }
+      ctx.fill()
+
+      /* ── mouse glow ring ── */
       if (mouseX > 0 && mouseX < canvas.width && mouseY > 0 && mouseY < canvas.height) {
         const glowRGBA = dark ? '139,92,246' : '99,102,241'
         const grd = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 90)
