@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import emailjs from '@emailjs/browser'
 import ThemeToggle from './components/ThemeToggle'
-import HeroCanvas from './components/HeroCanvas'
+import WaveGrid    from './components/heroes/WaveGrid'
 
 /* ── Data ─────────────────────────────────────── */
 
@@ -13,7 +13,7 @@ const ROLES = [
   'AI / ML Enthusiast',
   'Problem Solver',
   'Builder',
-  'Computer Science Student',
+  'CS Student',
 ]
 
 const TECH_STACK = [
@@ -243,8 +243,7 @@ export default function Home() {
 
       {/* ── Hero ── */}
       <section id="home" className="relative pt-36 pb-24 px-6 z-10 overflow-hidden">
-        {/* Interactive particle constellation — fills the empty hero space */}
-        <HeroCanvas />
+        <WaveGrid />
         <div className="relative z-10 max-w-6xl mx-auto flex flex-col items-center text-center">
 
           {/* Avatar */}
@@ -266,6 +265,9 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          {/* Frosted glass backdrop for text readability */}
+          <div className="rounded-2xl px-8 py-6 backdrop-blur-sm bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 shadow-lg flex flex-col items-center">
 
           {/* Title */}
           <div className="animate-fade-down" style={{ animationDelay: '0.1s' }}>
@@ -323,8 +325,10 @@ export default function Home() {
             </button>
           </div>
 
+          </div>{/* end frosted glass */}
+
           {/* Scroll hint */}
-          <div className="mt-16">
+          <div className="mt-8">
             <button onClick={() => scrollToSection('about')} className="animate-chevron text-slate-400 hover:text-slate-500 transition-colors" aria-label="Scroll down">
               <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
