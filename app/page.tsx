@@ -406,10 +406,14 @@ export default function Home() {
             {TECH_STACK.map((tech, i) => (
               <span
                 key={tech.name}
-                className={`animate-on-scroll tech-badge bg-gradient-to-r ${tech.gradient} text-white px-4 py-2 rounded-full font-medium text-sm shadow-md`}
+                className="animate-on-scroll inline-block"
                 style={{ transitionDelay: `${0.05 + i * 0.045}s` }}
               >
-                {tech.name}
+                <span
+                  className={`tech-badge inline-block bg-gradient-to-r ${tech.gradient} text-white px-4 py-2 rounded-full font-medium text-sm shadow-md`}
+                >
+                  {tech.name}
+                </span>
               </span>
             ))}
           </div>
