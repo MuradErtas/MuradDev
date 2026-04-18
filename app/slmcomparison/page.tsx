@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, type KeyboardEvent } from 'react'
 import SiteChrome from '../components/SiteChrome'
+import { isProxyHealthOk, usePythonProxyHealth } from '../hooks/usePythonProxyHealth'
 import { BTN_GITHUB, BTN_CONTROL_BLUE, BTN_CONTROL_PURPLE, BTN_OPEN_EXTERNAL } from '../constants/projectButtons'
 
 interface Message {
@@ -19,8 +20,7 @@ export default function SLMComparisonPage() {
   const [wakeLoading, setWakeLoading] = useState(false)
   const [wakeBanner, setWakeBanner] = useState<string | null>(null)
   /** Send stays disabled until health succeeds (mount, wake, or last successful generate). */
-  const [apiReady, setApiReady] = useState(false)
-  const [apiCheckDone, setApiCheckDone] = useState(false)
+  const { apiReady, setApiReady, apiCheckDone } = usePythonProxyHealth('/api/slm/health')
   const transformerEndRef = useRef<HTMLDivElement>(null)
   const rnnEndRef = useRef<HTMLDivElement>(null)
   const transformerScrollRef = useRef<HTMLDivElement>(null)
@@ -49,24 +49,6 @@ export default function SLMComparisonPage() {
     const h = Math.min(Math.max(el.scrollHeight, INPUT_MIN_PX), INPUT_MAX_PX)
     el.style.height = `${h}px`
   }, [input])
-
-  // If backend is already warm, allow Send without tapping Wake first
-  useEffect(() => {
-    let cancelled = false
-    ;(async () => {
-      try {
-        const r = await fetch(`/api/slm/health?ts=${Date.now()}`, { cache: 'no-store' })
-        if (!cancelled && r.ok) setApiReady(true)
-      } catch {
-        /* cold / offline; user uses Wake API */
-      } finally {
-        if (!cancelled) setApiCheckDone(true)
-      }
-    })()
-    return () => {
-      cancelled = true
-    }
-  }, [])
 
   const handleSend = async () => {
     if (!input.trim() || loading || !apiReady) return
@@ -144,7 +126,7 @@ export default function SLMComparisonPage() {
       for (let pass = 0; pass < maxPasses; pass++) {
         try {
           const res = await fetch(`/api/slm/health?ts=${Date.now()}`, { cache: 'no-store' })
-          if (res.ok) {
+          if (await isProxyHealthOk(res)) {
             setApiReady(true)
             setWakeBanner('Backend is awake; you can send a message.')
             setTimeout(() => setWakeBanner(null), 6000)

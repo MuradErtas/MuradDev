@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import SiteChrome from '../components/SiteChrome'
+import { isProxyHealthOk, usePythonProxyHealth } from '../hooks/usePythonProxyHealth'
 import { BTN_GITHUB, BTN_CONTROL_BLUE, BTN_CONTROL_RED, BTN_CONTROL_PURPLE, BTN_OPEN_EXTERNAL } from '../constants/projectButtons'
 
 interface GameState {
@@ -21,8 +22,7 @@ export default function RLSnakePage() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [wakeLoading, setWakeLoading] = useState(false)
   const [wakeBanner, setWakeBanner] = useState<string | null>(null)
-  const [apiReady, setApiReady] = useState(false)
-  const [apiCheckDone, setApiCheckDone] = useState(false)
+  const { apiReady, setApiReady, apiCheckDone } = usePythonProxyHealth('/api/rlsnake/health')
   const [gameState, setGameState] = useState<GameState>({
     score: 0,
     gameOver: false,
@@ -71,23 +71,6 @@ export default function RLSnakePage() {
   const CELL_SIZE = 20
   const GAME_SPEED = 150 // ms per move
 
-  useEffect(() => {
-    let cancelled = false
-    ;(async () => {
-      try {
-        const r = await fetch(`/api/rlsnake/health?ts=${Date.now()}`, { cache: 'no-store' })
-        if (!cancelled && r.ok) setApiReady(true)
-      } catch {
-        /* cold / offline */
-      } finally {
-        if (!cancelled) setApiCheckDone(true)
-      }
-    })()
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
   const wakeServers = async () => {
     if (wakeLoading || isPlaying || apiReady) return
     setWakeLoading(true)
@@ -97,7 +80,7 @@ export default function RLSnakePage() {
       for (let pass = 0; pass < maxPasses; pass++) {
         try {
           const res = await fetch(`/api/rlsnake/health?ts=${Date.now()}`, { cache: 'no-store' })
-          if (res.ok) {
+          if (await isProxyHealthOk(res)) {
             setApiReady(true)
             setWakeBanner('API is awake; you can pick a model and play.')
             setTimeout(() => setWakeBanner(null), 6000)
