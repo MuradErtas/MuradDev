@@ -65,6 +65,18 @@ const FEATURED_PROJECTS = [
     ],
   },
   {
+    path: '/about',
+    gradient: 'from-purple-400 to-pink-500',
+    glowClass: 'hover:shadow-pink-500/30 hover:border-pink-400/50',
+    title: 'Portfolio Website',
+    desc: 'This site — a modern portfolio with animations, dark mode, and a contact form, built with Next.js, TypeScript, and Tailwind CSS.',
+    tags: [
+      { label: 'Next.js',  color: 'bg-blue-100   dark:bg-blue-900/30   text-blue-700   dark:text-blue-300'   },
+      { label: 'TypeScript', color: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' },
+      { label: 'Tailwind',   color: 'bg-green-100  dark:bg-green-900/30  text-green-700  dark:text-green-300'  },
+    ],
+  },
+  {
     path: '/rlsnake',
     gradient: 'from-green-400 to-blue-500',
     glowClass: 'hover:shadow-green-500/30 hover:border-green-400/50',
@@ -74,18 +86,6 @@ const FEATURED_PROJECTS = [
       { label: 'PyTorch',  color: 'bg-blue-100   dark:bg-blue-900/30   text-blue-700   dark:text-blue-300'   },
       { label: 'RL / DQN', color: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' },
       { label: 'AI / ML',  color: 'bg-green-100  dark:bg-green-900/30  text-green-700  dark:text-green-300'  },
-    ],
-  },
-  {
-    path: '/quantium',
-    gradient: 'from-orange-400 to-red-500',
-    glowClass: 'hover:shadow-orange-500/30 hover:border-orange-400/50',
-    title: 'Quantium Data Analytics',
-    desc: 'Turning raw retail sales data into actionable insights with interactive dashboards and customer segment analysis.',
-    tags: [
-      { label: 'Python', color: 'bg-blue-100   dark:bg-blue-900/30   text-blue-700   dark:text-blue-300'   },
-      { label: 'Pandas', color: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' },
-      { label: 'Dash',   color: 'bg-green-100  dark:bg-green-900/30  text-green-700  dark:text-green-300'  },
     ],
   },
 ]
@@ -258,7 +258,7 @@ export default function Home() {
           </div>
 
           {/* Frosted glass backdrop for text readability */}
-          <div className="rounded-2xl px-8 py-6 backdrop-blur-sm bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 shadow-lg flex flex-col items-center">
+          <div className="project-hero-glass">
 
           {/* Title */}
           <div className="animate-fade-down" style={{ animationDelay: '0.1s' }}>
