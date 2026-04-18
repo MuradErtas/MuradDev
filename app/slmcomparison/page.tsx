@@ -136,7 +136,7 @@ export default function SLMComparisonPage() {
 
   /** Hit lightweight health endpoint until API responds — wakes cold Railway / similar hosts */
   const wakeServers = async () => {
-    if (wakeLoading || loading) return
+    if (wakeLoading || loading || apiReady) return
     setWakeLoading(true)
     setWakeBanner('Waking API (first attempt can take up to ~50s if the host was asleep)…')
     const maxPasses = 3
@@ -217,9 +217,13 @@ export default function SLMComparisonPage() {
             <button
               type="button"
               onClick={wakeServers}
-              disabled={wakeLoading || loading}
+              disabled={wakeLoading || loading || apiReady}
               className={`${BTN_OPEN_EXTERNAL} disabled:opacity-45 disabled:cursor-not-allowed disabled:hover:scale-100`}
-              title="Pings the Python API until it responds — use when the host has been idle"
+              title={
+                apiReady
+                  ? 'API is already reachable'
+                  : 'Pings the Python API until it responds — use when the host has been idle'
+              }
             >
               <svg className="w-5 h-5 shrink-0 -translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
