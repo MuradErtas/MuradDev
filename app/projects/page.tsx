@@ -41,7 +41,7 @@ const projects: Project[] = [
   {
     id: 3,
     title: 'Market Maker Simulator',
-    description: 'Live Avellaneda–Stoikov market maker vs Poisson noise flow with regime-switching vol: LOB engine, WebSocket dashboard, and quant metrics on Railway.',
+    description: 'Avellaneda–Stoikov optimal MM with LOB matching, regime-switching vol, Poisson noise flow, and a live WebSocket dashboard, FastAPI + React.',
     tags: [{ name: 'FastAPI', color: 'blue' }, { name: 'TypeScript', color: 'purple' }, { name: 'Quant', color: 'green' }],
     image: 'from-emerald-500 to-slate-700',
     glow: 'hover:shadow-emerald-500/30 hover:border-emerald-400/50',
