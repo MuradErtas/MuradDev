@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import emailjs from '@emailjs/browser'
 import ThemeToggle from './components/ThemeToggle'
 import WaveGrid    from './components/heroes/WaveGrid'
@@ -102,6 +102,8 @@ export default function Home() {
   const [roleVisible,   setRoleVisible]   = useState(true)
   const [menuOpen,      setMenuOpen]      = useState(false)
   const [photoError,    setPhotoError]    = useState(false)
+  /** While true, scroll-spy must not run; otherwise smooth scroll briefly reports "home" and replays the home underline. */
+  const suppressScrollSpyRef = useRef(false)
 
   /* Rotating role */
   useEffect(() => {
@@ -125,11 +127,18 @@ export default function Home() {
   /* Active section tracking */
   useEffect(() => {
     const ids = NAV_ITEMS.map(n => n.id)
-    const onScroll = () => {
+    const syncFromScroll = () => {
       for (let i = ids.length - 1; i >= 0; i--) {
         const el = document.getElementById(ids[i])
-        if (el && window.scrollY >= el.offsetTop - 130) { setActiveSection(ids[i]); break }
+        if (el && window.scrollY >= el.offsetTop - 130) {
+          setActiveSection(ids[i])
+          break
+        }
       }
+    }
+    const onScroll = () => {
+      if (suppressScrollSpyRef.current) return
+      syncFromScroll()
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
@@ -143,9 +152,30 @@ export default function Home() {
   }, [])
 
   const scrollToSection = (id: string) => {
+    suppressScrollSpyRef.current = true
     setActiveSection(id)
     setMenuOpen(false)
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+
+    let finished = false
+    const finish = () => {
+      if (finished) return
+      finished = true
+      window.clearTimeout(fallbackTimer)
+      suppressScrollSpyRef.current = false
+      requestAnimationFrame(() => {
+        const ids = NAV_ITEMS.map(n => n.id)
+        for (let i = ids.length - 1; i >= 0; i--) {
+          const el = document.getElementById(ids[i])
+          if (el && window.scrollY >= el.offsetTop - 130) {
+            setActiveSection(ids[i])
+            break
+          }
+        }
+      })
+    }
+    const fallbackTimer = window.setTimeout(finish, 1000)
+    window.addEventListener('scrollend', finish, { once: true })
   }
 
   /* ── Render ── */
