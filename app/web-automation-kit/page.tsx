@@ -49,7 +49,7 @@ export default function WebAutomationKitPage() {
 
         {/* Project Overview */}
         <div className="mb-8">
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700 content-card">
             <h2 className="project-section-h2">Project Overview</h2>
             <div className="space-y-4 text-slate-600 dark:text-slate-400">
               <p className="leading-relaxed">
@@ -96,7 +96,7 @@ export default function WebAutomationKitPage() {
 
         {/* Automation Modules */}
         <div className="mb-8">
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700 content-card">
             <h2 className="project-section-h2">Automation Modules</h2>
             <div className="space-y-6">
               <div className="border-l-4 border-blue-500 pl-4">
@@ -141,7 +141,7 @@ export default function WebAutomationKitPage() {
 
         {/* About Section */}
         <div className="mb-8">
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700 content-card">
             <h2 className="project-section-h2">About This Project</h2>
             
             <div className="space-y-6 text-slate-600 dark:text-slate-400">

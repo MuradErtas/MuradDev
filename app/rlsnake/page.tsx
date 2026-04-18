@@ -99,7 +99,7 @@ export default function RLSnakePage() {
           const res = await fetch(`/api/rlsnake/health?ts=${Date.now()}`, { cache: 'no-store' })
           if (res.ok) {
             setApiReady(true)
-            setWakeBanner('API is awake — you can pick a model and play.')
+            setWakeBanner('API is awake; you can pick a model and play.')
             setTimeout(() => setWakeBanner(null), 6000)
             return
           }
@@ -323,7 +323,7 @@ export default function RLSnakePage() {
     >
       <div className="flex flex-col max-w-7xl mx-auto w-full px-6 pt-32 pb-6">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 w-full max-w-4xl mx-auto">
           <h1 className="project-page-h1">
             RL Snake
           </h1>
@@ -351,7 +351,7 @@ export default function RLSnakePage() {
               title={
                 apiReady
                   ? 'API is already reachable'
-                  : 'Pings the Python API until it responds — use when the host has been idle'
+                  : 'Pings the Python API until it responds; use when the host has been idle'
               }
             >
               <svg className="w-5 h-5 shrink-0 -translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -362,8 +362,10 @@ export default function RLSnakePage() {
           </div>
         </div>
 
+        {/* Model + game (interactive) */}
+        <div className="mb-8 flex w-full flex-col gap-6">
         {/* Model Selection */}
-        <div className="mb-6">
+        <div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {models.map((model) => {
               const isSelected = selectedModel === model.id
@@ -417,8 +419,8 @@ export default function RLSnakePage() {
         </div>
 
         {/* Game Area */}
-        <div className="flex-1 flex flex-col items-center">
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg border border-slate-200 dark:border-slate-700 mb-4">
+        <div className="flex flex-col items-center gap-4">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg border border-slate-200 dark:border-slate-700">
             <canvas
               ref={canvasRef}
               width={GRID_SIZE * CELL_SIZE}
@@ -428,7 +430,7 @@ export default function RLSnakePage() {
           </div>
 
           {/* Game Stats */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-lg border border-slate-200 dark:border-slate-700 mb-4 w-full max-w-md">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-lg border border-slate-200 dark:border-slate-700 w-full max-w-md">
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
                 <p className="text-sm text-slate-600 dark:text-slate-400">Score</p>
@@ -475,66 +477,153 @@ export default function RLSnakePage() {
             </button>
           </div>
           {wakeBanner && (
-            <p className="mt-4 max-w-xl mx-auto text-center text-sm text-slate-600 dark:text-slate-400" role="status">
+            <p className="max-w-xl mx-auto text-center text-sm text-slate-600 dark:text-slate-400" role="status">
               {wakeBanner}
             </p>
           )}
           {!apiReady && apiCheckDone && !wakeBanner && (
-            <p className="mt-4 max-w-xl mx-auto text-center text-sm text-slate-500 dark:text-slate-500">
+            <p className="max-w-xl mx-auto text-center text-sm text-slate-500 dark:text-slate-500">
               Model selection and play are disabled until the API responds. Use <span className="font-medium text-slate-700 dark:text-slate-300">Wake API</span> above if the host was asleep.
             </p>
           )}
         </div>
+        </div>
+
+        {/* Project Overview */}
+        <div className="mb-8">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700 content-card">
+            <h2 className="project-section-h2">Project Overview</h2>
+            <div className="space-y-4 text-slate-600 dark:text-slate-400">
+              <p className="leading-relaxed">
+                This project trains Deep Q-Network (DQN) reinforcement learning agents to play Snake,
+                using the same class of algorithm that underpinned DeepMind&apos;s Atari breakthroughs, and hosts
+                four training-stage checkpoints so you can watch intelligence emerge in real time. Select
+                a model below and press Start to see it play.
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 rounded-lg p-4">
+                  <h3 className="font-semibold text-red-700 dark:text-red-400 mb-1">Untrained</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">0 episodes: pure random actions, dies almost immediately.</p>
+                </div>
+                <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800/40 rounded-lg p-4">
+                  <h3 className="font-semibold text-orange-700 dark:text-orange-400 mb-1">Beginner</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">~50 episodes: learns to avoid immediate walls and survive briefly.</p>
+                </div>
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800/40 rounded-lg p-4">
+                  <h3 className="font-semibold text-yellow-700 dark:text-yellow-400 mb-1">Intermediate</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">~250 episodes: navigates toward food and avoids its own tail.</p>
+                </div>
+                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/40 rounded-lg p-4">
+                  <h3 className="font-semibold text-green-700 dark:text-green-400 mb-1">Advanced</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">~1,000 episodes: efficient navigation, high scores, deliberate strategy.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Deep Q-Learning */}
+        <div className="mb-8">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700 content-card">
+            <h2 className="project-section-h2">Deep Q-Learning</h2>
+            <div className="space-y-4 text-slate-600 dark:text-slate-400">
+              <p className="leading-relaxed">
+                DQN is a model-free reinforcement learning algorithm that approximates the optimal action-value
+                function Q(s, a) with a neural network. The agent receives a reward signal (+10 for food,
+                −10 for dying, 0 otherwise) and adjusts its network weights to maximise cumulative reward over
+                time; no hand-coded rules, just trial, error, and gradient descent.
+              </p>
+              <div className="grid md:grid-cols-2 gap-6 mt-4">
+                <div className="border-l-4 border-blue-500 pl-4">
+                  <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2">State Space</h3>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm">
+                    An 11-dimensional boolean vector: danger ahead / left / right, current heading (4 booleans),
+                    and food direction relative to the head (4 booleans). Compact enough for a small fully-connected
+                    network to process in microseconds.
+                  </p>
+                </div>
+                <div className="border-l-4 border-purple-500 pl-4">
+                  <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2">Neural Network</h3>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm">
+                    Three fully connected layers (11 → 256 → 256 → 4 outputs). The four output Q-values correspond
+                    to the four actions; the agent selects the highest-valued action at each step.
+                  </p>
+                </div>
+                <div className="border-l-4 border-green-500 pl-4">
+                  <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2">Experience Replay</h3>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm">
+                    Transitions (s, a, r, s&prime;) are stored in a fixed-size replay buffer and sampled randomly
+                    during training, breaking temporal correlations and stabilising gradient updates.
+                  </p>
+                </div>
+                <div className="border-l-4 border-orange-500 pl-4">
+                  <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2">Target Network</h3>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm">
+                    A periodically frozen copy of the main network provides stable Q-value targets, preventing
+                    the moving-target feedback loops that cause naïve Q-learning to diverge.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* About Section */}
-        <div className="mt-12 mb-8">
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
+        <div className="mb-8">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700 content-card">
             <h2 className="project-section-h2">About This Project</h2>
             
             <div className="space-y-6 text-slate-600 dark:text-slate-400">
               <div>
                 <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Overview</h3>
                 <p className="leading-relaxed">
-                  This project demonstrates reinforcement learning in action by training Deep Q-Network (DQN) agents to play Snake. 
-                  The agents learn through trial and error, gradually improving their gameplay as they accumulate training experience. 
-                  You can compare models at different training stages to see how reinforcement learning algorithms develop strategic 
-                  decision-making capabilities over time.
+                  This project implements Deep Q-Network (DQN) reinforcement learning, the same algorithm
+                  that underpinned DeepMind&apos;s Atari breakthroughs, applied to the classic game of Snake. An
+                  agent learns purely through trial and error: it receives a reward for eating food, a penalty
+                  for dying, and nothing in between, with no hand-crafted rules or human demonstrations. Starting
+                  from completely random behaviour, it gradually discovers that avoiding walls, not biting its own
+                  tail, and navigating toward food are all worth doing.
                 </p>
+                <p className="leading-relaxed mt-3">
+                  Four model checkpoints are hosted so you can watch the progression live: untrained (random), beginner
+                  (~50 episodes), intermediate (~250 episodes), and advanced (~1,000 episodes). The contrast between
+                  the chaotic untrained agent and the advanced one navigating efficiently makes the learning curve
+                  immediately visible.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">How It Works</h3>
+                <ul className="list-disc list-inside space-y-2 leading-relaxed">
+                  <li><strong className="text-slate-800 dark:text-slate-200">State representation:</strong> An 11-dimensional boolean vector captures danger in each direction, the agent&apos;s current heading, and the relative position of food, compact enough for a small network to process quickly.</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Neural network:</strong> A three-layer fully connected network (11 → 256 → 256 → 4 outputs) maps state to Q-values for each action (up, down, left, right).</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Experience replay:</strong> Transitions are stored in a fixed-size replay buffer and sampled randomly, breaking correlations between consecutive steps and stabilising training.</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Target network:</strong> A periodically updated copy of the main network provides stable Q-value targets, preventing the feedback loops that can derail naive Q-learning.</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Exploration:</strong> Epsilon-greedy decay starts exploration high and gradually shifts to exploitation as the agent&apos;s policy matures.</li>
+                </ul>
               </div>
 
               <div>
                 <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Technologies Used</h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed">
-                  <li><strong className="text-slate-800 dark:text-slate-200">PyTorch:</strong> Deep learning framework for implementing and training the DQN neural network</li>
-                  <li><strong className="text-slate-800 dark:text-slate-200">Deep Q-Learning (DQN):</strong> Reinforcement learning algorithm that uses a neural network to approximate Q-values</li>
-                  <li><strong className="text-slate-800 dark:text-slate-200">FastAPI:</strong> Python backend API for running game logic and model inference</li>
-                  <li><strong className="text-slate-800 dark:text-slate-200">Next.js & React:</strong> Frontend framework for interactive UI and real-time game visualization</li>
-                  <li><strong className="text-slate-800 dark:text-slate-200">Canvas API:</strong> HTML5 Canvas for rendering the game grid and snake visualization</li>
-                  <li><strong className="text-slate-800 dark:text-slate-200">Docker & Railway:</strong> Containerization and cloud deployment for the Python API service</li>
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Skills Developed</h3>
-                <ul className="list-disc list-inside space-y-2 leading-relaxed">
-                  <li>Reinforcement learning algorithm implementation and hyperparameter tuning</li>
-                  <li>Neural network architecture design for Q-value approximation</li>
-                  <li>Game state representation and reward function engineering</li>
-                  <li>Full-stack development with separated frontend/backend architecture</li>
-                  <li>RESTful API design for real-time game state management</li>
-                  <li>Asynchronous programming and concurrent request handling</li>
-                  <li>Model deployment and serving in production environments</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">PyTorch:</strong> Deep learning framework used to define, train, and serialise the DQN neural network</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Python:</strong> Core training loop, game environment, replay buffer, and epsilon-greedy scheduler</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">FastAPI:</strong> Lightweight Python backend exposing session-based REST endpoints (start / step / reset / health) for the frontend to drive the agent one move at a time</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Next.js &amp; React:</strong> Frontend application with real-time game state polling and canvas rendering</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Canvas 2D API:</strong> Browser-side game board rendering, drawing grid lines, snake segments, and food each frame from the API response</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Railway:</strong> Cloud hosting for the Python inference API, with a wake-up endpoint to handle cold-start latency</li>
                 </ul>
               </div>
 
               <div>
                 <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Key Features</h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed">
-                  <li>Interactive visualization of AI agents playing Snake in real-time</li>
-                  <li>Comparison of models at different training stages (untrained to advanced)</li>
-                  <li>Session-based game state management for multiple concurrent games</li>
-                  <li>Responsive UI with dark mode support</li>
-                  <li>Production-ready deployment with proper error handling and timeouts</li>
+                  <li>Four training-level checkpoints for direct side-by-side behavioural comparison</li>
+                  <li>Session-based API design: each game run is isolated, enabling multiple concurrent viewers</li>
+                  <li>Live canvas rendering of the full 20×20 grid at 150 ms per tick</li>
+                  <li>Real-time score and move-count display updating with every API step response</li>
+                  <li>Wake API button with retry logic to gracefully handle cold Railway host starts</li>
+                  <li>Controls (Start / Stop / Reset) that cleanly manage the polling interval lifecycle</li>
                 </ul>
               </div>
             </div>
@@ -544,4 +633,3 @@ export default function RLSnakePage() {
     </SiteChrome>
   )
 }
-

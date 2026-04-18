@@ -65,7 +65,7 @@ const FEATURED_PROJECTS = [
     ],
   },
   {
-    path: '/about',
+    path: '/portfolio-website',
     gradient: 'from-purple-400 to-pink-500',
     glowClass: 'hover:shadow-pink-500/30 hover:border-pink-400/50',
     title: 'Portfolio Website',

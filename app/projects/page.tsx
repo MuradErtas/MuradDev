@@ -36,7 +36,7 @@ const projects: Project[] = [
     tags: [{ name: 'Next.js', color: 'blue' }, { name: 'TypeScript', color: 'purple' }, { name: 'Tailwind', color: 'green' }],
     image: 'from-purple-400 to-pink-500',
     glow: 'hover:shadow-pink-500/30 hover:border-pink-400/50',
-    link: '/about',
+    link: '/portfolio-website',
   },
   {
     id: 3,

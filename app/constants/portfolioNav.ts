@@ -1,4 +1,4 @@
-/** Shared with `app/page.tsx` — keep scroll targets in sync. */
+/** Shared with `app/page.tsx`; keep scroll targets in sync. */
 export const PORTFOLIO_NAV_ITEMS = [
   { label: 'Home', id: 'home' },
   { label: 'About', id: 'about' },
@@ -29,7 +29,7 @@ export const PROJECTS_AREA_PATHS = new Set([
 export function isProjectDetailNavRoute(pathname: string): boolean {
   const p = pathname || ''
   if (p === '/projects' || p.startsWith('/projects/')) return false
-  if (p === '/about' || p.startsWith('/about/')) return true
+  if (p === '/portfolio-website' || p.startsWith('/portfolio-website/')) return true
   return Array.from(PROJECTS_AREA_PATHS).some(
     route => route !== '/projects' && (p === route || p.startsWith(`${route}/`))
   )

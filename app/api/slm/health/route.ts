@@ -3,13 +3,13 @@ import { NextRequest, NextResponse } from 'next/server'
 // SLM Comparison API URL - set via environment variable
 const SLM_COMP_API_URL = process.env.SLM_COMP_API || 'http://localhost:8000'
 
-/** Allow cold starts (e.g. Railway sleep) — keep below Vercel / platform function limit */
+/** Allow cold starts (e.g. Railway sleep); keep below Vercel / platform function limit */
 export const maxDuration = 60
 
 export async function GET(request: NextRequest) {
   try {
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 50000) // 50s — sleeping hosts often need >10s
+    const timeoutId = setTimeout(() => controller.abort(), 50000) // 50s; sleeping hosts often need >10s
     
     try {
       const response = await fetch(`${SLM_COMP_API_URL}/health`, {

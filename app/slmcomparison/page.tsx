@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, type KeyboardEvent } from 'react'
 import SiteChrome from '../components/SiteChrome'
 import { BTN_GITHUB, BTN_CONTROL_BLUE, BTN_CONTROL_PURPLE, BTN_OPEN_EXTERNAL } from '../constants/projectButtons'
 
@@ -58,7 +58,7 @@ export default function SLMComparisonPage() {
         const r = await fetch(`/api/slm/health?ts=${Date.now()}`, { cache: 'no-store' })
         if (!cancelled && r.ok) setApiReady(true)
       } catch {
-        /* cold / offline — user uses Wake API */
+        /* cold / offline; user uses Wake API */
       } finally {
         if (!cancelled) setApiCheckDone(true)
       }
@@ -127,14 +127,14 @@ export default function SLMComparisonPage() {
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       if (apiReady) handleSend()
     }
   }
 
-  /** Hit lightweight health endpoint until API responds — wakes cold Railway / similar hosts */
+  /** Hit lightweight health endpoint until API responds; wakes cold Railway / similar hosts */
   const wakeServers = async () => {
     if (wakeLoading || loading || apiReady) return
     setWakeLoading(true)
@@ -146,7 +146,7 @@ export default function SLMComparisonPage() {
           const res = await fetch(`/api/slm/health?ts=${Date.now()}`, { cache: 'no-store' })
           if (res.ok) {
             setApiReady(true)
-            setWakeBanner('Backend is awake — you can send a message.')
+            setWakeBanner('Backend is awake; you can send a message.')
             setTimeout(() => setWakeBanner(null), 6000)
             return
           }
@@ -193,16 +193,15 @@ export default function SLMComparisonPage() {
         </p>
       )}
     >
-      <div className="flex flex-col">
-      <div className="pt-32 pb-6 px-6">
-        <div className="max-w-7xl mx-auto">
+      <div className="flex flex-col max-w-7xl mx-auto w-full px-6 pt-32 pb-6">
+        <div className="text-center mb-8 w-full max-w-4xl mx-auto">
           <h1 className="project-page-h1">
             SLM Comparison
           </h1>
-          <p className="text-center text-slate-600 dark:text-slate-300 mb-6 max-w-3xl mx-auto">
+          <p className="text-center text-slate-600 dark:text-slate-300 mb-6 max-w-2xl mx-auto">
             Compare Transformer and RNN small language model responses side by side, trained on the same dataset (Shakespeare's plays) with the same hyperparameters. Built from scratch using PyTorch with a custom tokeniser, see GitHub repository for more details.
           </p>
-          <div className="flex flex-wrap gap-4 justify-center items-center">
+          <div className="flex flex-wrap gap-4 justify-center">
             <a
               href={githubUrl}
               target="_blank"
@@ -219,11 +218,7 @@ export default function SLMComparisonPage() {
               onClick={wakeServers}
               disabled={wakeLoading || loading || apiReady}
               className={`${BTN_OPEN_EXTERNAL} disabled:opacity-45 disabled:cursor-not-allowed disabled:hover:scale-100`}
-              title={
-                apiReady
-                  ? 'API is already reachable'
-                  : 'Pings the Python API until it responds — use when the host has been idle'
-              }
+              title={apiReady ? 'API is already reachable' : 'Pings the Python API until it responds; use when the host has been idle.'}
             >
               <svg className="w-5 h-5 shrink-0 -translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -232,204 +227,273 @@ export default function SLMComparisonPage() {
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Chat Container */}
-      <div className="flex-1 flex flex-col max-w-7xl mx-auto w-full px-6 pb-6">
-        {/* Messages Area */}
-        <div className="flex-1 grid md:grid-cols-2 gap-4 mb-4 overflow-y-auto">
-          {/* Transformer Panel */}
-          <div className="flex flex-col bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
-            <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-t-xl">
-              <h2 className="font-semibold text-green-700 dark:text-green-400">Transformer Model</h2>
-            </div>
-            <div ref={transformerScrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[400px] hide-scrollbar">
-              {messages.length === 0 ? (
-                <div className="flex items-center justify-center h-full text-slate-400 dark:text-slate-500">
-                  <p>Send a message to see Transformer responses...</p>
-                </div>
-              ) : (
-                messages
-                  .filter(m => m.role === 'user' || m.role === 'transformer')
-                  .map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                    >
+        <div className="mb-8 flex w-full flex-col gap-6">
+          {/* Messages Area */}
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Transformer Panel */}
+            <div className="flex flex-col bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+              <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-t-xl">
+                <h2 className="font-semibold text-green-700 dark:text-green-400">Transformer Model</h2>
+              </div>
+              <div ref={transformerScrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[400px] hide-scrollbar">
+                {messages.length === 0 ? (
+                  <div className="flex items-center justify-center h-full text-slate-400 dark:text-slate-500">
+                    <p>Send a message to see Transformer responses...</p>
+                  </div>
+                ) : (
+                  messages
+                    .filter(m => m.role === 'user' || m.role === 'transformer')
+                    .map((message) => (
                       <div
-                        className={`max-w-[85%] rounded-lg px-4 py-2 ${
-                          message.role === 'user'
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100'
-                        }`}
+                        key={message.id}
+                        className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                       >
-                        <p className="whitespace-pre-wrap break-words">{message.content}</p>
+                        <div
+                          className={`max-w-[85%] rounded-lg px-4 py-2 ${
+                            message.role === 'user'
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100'
+                          }`}
+                        >
+                          <p className="whitespace-pre-wrap break-words">{message.content}</p>
+                        </div>
+                      </div>
+                    ))
+                )}
+                {loading && (
+                  <div className="flex justify-start">
+                    <div className="bg-slate-100 dark:bg-slate-700 rounded-lg px-4 py-2">
+                      <div className="flex gap-1">
+                        <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                        <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                        <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                       </div>
                     </div>
-                  ))
-              )}
-              {loading && (
-                <div className="flex justify-start">
-                  <div className="bg-slate-100 dark:bg-slate-700 rounded-lg px-4 py-2">
-                    <div className="flex gap-1">
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  </div>
+                )}
+                <div ref={transformerEndRef} />
+              </div>
+            </div>
+
+            {/* RNN Panel */}
+            <div className="flex flex-col bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+              <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-t-xl">
+                <h2 className="font-semibold text-orange-700 dark:text-orange-400">RNN Model (LSTM)</h2>
+              </div>
+              <div ref={rnnScrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[400px] hide-scrollbar">
+                {messages.length === 0 ? (
+                  <div className="flex items-center justify-center h-full text-slate-400 dark:text-slate-500">
+                    <p>Send a message to see RNN responses...</p>
+                  </div>
+                ) : (
+                  messages
+                    .filter(m => m.role === 'user' || m.role === 'rnn')
+                    .map((message) => (
+                      <div
+                        key={message.id}
+                        className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                      >
+                        <div
+                          className={`max-w-[85%] rounded-lg px-4 py-2 ${
+                            message.role === 'user'
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100'
+                          }`}
+                        >
+                          <p className="whitespace-pre-wrap break-words">{message.content}</p>
+                        </div>
+                      </div>
+                    ))
+                )}
+                {loading && (
+                  <div className="flex justify-start">
+                    <div className="bg-slate-100 dark:bg-slate-700 rounded-lg px-4 py-2">
+                      <div className="flex gap-1">
+                        <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                        <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                        <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-              <div ref={transformerEndRef} />
+                )}
+                <div ref={rnnEndRef} />
+              </div>
             </div>
           </div>
 
-          {/* RNN Panel */}
-          <div className="flex flex-col bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
-            <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-t-xl">
-              <h2 className="font-semibold text-orange-700 dark:text-orange-400">RNN Model (LSTM)</h2>
+          {/* Input Area */}
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-4">
+            <div className="flex flex-wrap sm:flex-nowrap gap-2 items-stretch">
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Type your message here... (Press Enter to send, Shift+Enter for new line)"
+                className="flex-1 min-w-[min(100%,12rem)] min-h-12 max-h-32 px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 resize-none hide-scrollbar overflow-y-auto box-border"
+                rows={1}
+                disabled={loading}
+              />
+              <button
+                type="button"
+                onClick={handleSend}
+                disabled={!input.trim() || loading || !apiReady}
+                className={`${BTN_CONTROL_BLUE} self-stretch shrink-0`}
+              >
+                <span className="relative z-10 leading-none">{loading ? 'Sending…' : 'Send'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={clearChat}
+                disabled={messages.length === 0}
+                className={`${BTN_CONTROL_PURPLE} self-stretch shrink-0`}
+              >
+                <span className="relative z-10 leading-none">Clear</span>
+              </button>
             </div>
-            <div ref={rnnScrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[400px] hide-scrollbar">
-              {messages.length === 0 ? (
-                <div className="flex items-center justify-center h-full text-slate-400 dark:text-slate-500">
-                  <p>Send a message to see RNN responses...</p>
+            {wakeBanner && (
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-400" role="status">
+                {wakeBanner}
+              </p>
+            )}
+            {!apiReady && apiCheckDone && !wakeBanner && (
+              <p className="mt-2 text-sm text-slate-500 dark:text-slate-500">
+                Send is disabled until the API responds. Use <span className="font-medium text-slate-700 dark:text-slate-300">Wake API</span> above if the host was asleep.
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Project Overview */}
+        <div className="mb-8">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700 content-card">
+            <h2 className="project-section-h2">Project Overview</h2>
+            <div className="space-y-4 text-slate-600 dark:text-slate-400">
+              <p className="leading-relaxed">
+                This project builds a Transformer and an LSTM language model completely from scratch in PyTorch,
+                trains both on Shakespeare&apos;s complete works with identical hyperparameters, and puts them
+                side-by-side so you can send a prompt and watch the two architectures diverge. Type a prompt
+                in the box above and hit Send (or Wake API first if the host is asleep).
+              </p>
+              <div className="grid md:grid-cols-3 gap-4 mt-6">
+                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/40 rounded-lg p-4">
+                  <h3 className="font-semibold text-green-700 dark:text-green-400 mb-2">Transformer</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    Causal (GPT-style) decoder with multi-head self-attention; it attends to all prior tokens in one parallel pass.
+                  </p>
                 </div>
-              ) : (
-                messages
-                  .filter(m => m.role === 'user' || m.role === 'rnn')
-                  .map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                    >
-                      <div
-                        className={`max-w-[85%] rounded-lg px-4 py-2 ${
-                          message.role === 'user'
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100'
-                        }`}
-                      >
-                        <p className="whitespace-pre-wrap break-words">{message.content}</p>
-                      </div>
-                    </div>
-                  ))
-              )}
-              {loading && (
-                <div className="flex justify-start">
-                  <div className="bg-slate-100 dark:bg-slate-700 rounded-lg px-4 py-2">
-                    <div className="flex gap-1">
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                    </div>
-                  </div>
+                <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800/40 rounded-lg p-4">
+                  <h3 className="font-semibold text-orange-700 dark:text-orange-400 mb-2">RNN / LSTM</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    Stacked LSTM cells that compress sequence history into a hidden state, updated token-by-token.
+                  </p>
                 </div>
-              )}
-              <div ref={rnnEndRef} />
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/40 rounded-lg p-4">
+                  <h3 className="font-semibold text-blue-700 dark:text-blue-400 mb-2">Custom BPE Tokeniser</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    Built from scratch on the Shakespeare corpus, with no external tokenisation library, vocabulary tuned to Early Modern English.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Input Area */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-4">
-          <div className="flex flex-wrap sm:flex-nowrap gap-2 items-stretch">
-            <textarea
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Type your message here... (Press Enter to send, Shift+Enter for new line)"
-              className="flex-1 min-w-[min(100%,12rem)] min-h-12 max-h-32 px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 resize-none hide-scrollbar overflow-y-auto box-border"
-              rows={1}
-              disabled={loading}
-            />
-            <button
-              type="button"
-              onClick={handleSend}
-              disabled={!input.trim() || loading || !apiReady}
-              className={`${BTN_CONTROL_BLUE} self-stretch shrink-0`}
-            >
-              <span className="relative z-10 leading-none">{loading ? 'Sending…' : 'Send'}</span>
-            </button>
-            <button
-              type="button"
-              onClick={clearChat}
-              disabled={messages.length === 0}
-              className={`${BTN_CONTROL_PURPLE} self-stretch shrink-0`}
-            >
-              <span className="relative z-10 leading-none">Clear</span>
-            </button>
+        {/* Architecture Comparison */}
+        <div className="mb-8">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700 content-card">
+            <h2 className="project-section-h2">Architecture Comparison</h2>
+            <div className="space-y-4 text-slate-600 dark:text-slate-400">
+              <p className="leading-relaxed">
+                Both models are trained with identical hyperparameters (same learning rate, batch size, context length,
+                embedding dimension, and number of layers) on the same data split. The only variable is the architecture,
+                making the comparison as controlled as a laboratory experiment.
+              </p>
+              <div className="grid md:grid-cols-2 gap-6 mt-4">
+                <div className="bg-green-50/60 dark:bg-green-900/15 border border-green-200 dark:border-green-800/30 rounded-xl p-5">
+                  <h3 className="text-lg font-semibold text-green-700 dark:text-green-400 mb-3">Transformer Decoder</h3>
+                  <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                    <li className="flex gap-2"><span className="text-green-500 mt-0.5">▸</span><span><strong className="text-slate-800 dark:text-slate-200">Multi-head self-attention</strong>: each token attends to every prior token simultaneously: long-range dependencies are free.</span></li>
+                    <li className="flex gap-2"><span className="text-green-500 mt-0.5">▸</span><span><strong className="text-slate-800 dark:text-slate-200">Causal masking</strong>: future positions are masked so the model can only condition on the past during training.</span></li>
+                    <li className="flex gap-2"><span className="text-green-500 mt-0.5">▸</span><span><strong className="text-slate-800 dark:text-slate-200">Parallelisable</strong>: the entire sequence is processed in one forward pass, making training fast on GPU.</span></li>
+                    <li className="flex gap-2"><span className="text-green-500 mt-0.5">▸</span><span><strong className="text-slate-800 dark:text-slate-200">Tends to be more coherent</strong> at longer range, can reproduce Shakespearean structure more faithfully.</span></li>
+                  </ul>
+                </div>
+                <div className="bg-orange-50/60 dark:bg-orange-900/15 border border-orange-200 dark:border-orange-800/30 rounded-xl p-5">
+                  <h3 className="text-lg font-semibold text-orange-700 dark:text-orange-400 mb-3">RNN / LSTM</h3>
+                  <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                    <li className="flex gap-2"><span className="text-orange-500 mt-0.5">▸</span><span><strong className="text-slate-800 dark:text-slate-200">Recurrent hidden state</strong>: history is compressed into a fixed-size vector updated one token at a time.</span></li>
+                    <li className="flex gap-2"><span className="text-orange-500 mt-0.5">▸</span><span><strong className="text-slate-800 dark:text-slate-200">LSTM gating</strong>: input, forget, and output gates mitigate the vanishing gradient problem of plain RNNs.</span></li>
+                    <li className="flex gap-2"><span className="text-orange-500 mt-0.5">▸</span><span><strong className="text-slate-800 dark:text-slate-200">Sequential</strong>: tokens must be processed in order; training is slower and GPU utilisation is lower.</span></li>
+                    <li className="flex gap-2"><span className="text-orange-500 mt-0.5">▸</span><span><strong className="text-slate-800 dark:text-slate-200">Often more repetitive</strong> at longer range, style differences become apparent after a few tokens.</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
-          {wakeBanner && (
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400" role="status">
-              {wakeBanner}
-            </p>
-          )}
-          {!apiReady && apiCheckDone && !wakeBanner && (
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-500">
-              Send is disabled until the API responds. Use <span className="font-medium text-slate-700 dark:text-slate-300">Wake API</span> above if the host was asleep.
-            </p>
-          )}
         </div>
 
         {/* About Section */}
-        <div className="mt-12 mb-8">
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
+        <div className="mb-8">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700 content-card">
             <h2 className="project-section-h2">About This Project</h2>
             
             <div className="space-y-6 text-slate-600 dark:text-slate-400">
               <div>
                 <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Overview</h3>
                 <p className="leading-relaxed">
-                  This project compares two fundamental neural network architectures for language modeling: Transformers and RNNs (LSTM). 
-                  Both models are trained from scratch on the same dataset (Shakespeare's plays) with identical hyperparameters, 
-                  allowing for a fair comparison of their capabilities. The side-by-side interface lets you interact with both models 
-                  simultaneously to observe their differences in text generation, coherence, and style.
+                  This project builds two small language models completely from scratch in PyTorch, a Transformer
+                  (attention-based) and an LSTM (recurrence-based), and pits them directly against each other.
+                  Both are trained on the complete works of Shakespeare with identical hyperparameters: same learning
+                  rate, batch size, context length, embedding dimension, and number of layers. The only variable is
+                  the architecture, making the comparison as controlled as possible.
                 </p>
+                <p className="leading-relaxed mt-3">
+                  A custom byte-pair encoding (BPE) tokeniser is built from scratch on the same corpus, so neither
+                  model benefits from a pre-trained vocabulary. The side-by-side chat interface sends every prompt
+                  to both backends simultaneously, letting you observe directly how attention-based and recurrent
+                  approaches differ in text coherence, style mimicry, and long-range dependency handling.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Architecture</h3>
+                <ul className="list-disc list-inside space-y-2 leading-relaxed">
+                  <li><strong className="text-slate-800 dark:text-slate-200">Transformer decoder:</strong> Causal (GPT-style) architecture with multi-head self-attention blocks, layer normalisation, and feed-forward sublayers; attends to all prior tokens in one parallel pass.</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">LSTM:</strong> Stacked recurrent layers that compress sequence history into a hidden state, updating it token-by-token; a fundamentally different inductive bias with no global attention.</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Custom BPE tokeniser:</strong> Built directly on the Shakespeare corpus using iterative merge operations, with no third-party tokenisation library, resulting in a compact vocabulary tuned to Early Modern English.</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Training:</strong> Cross-entropy next-token prediction with AdamW optimiser; identical data splits and shuffle seeds across both models to eliminate confounding variables.</li>
+                </ul>
               </div>
 
               <div>
                 <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Technologies Used</h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed">
-                  <li><strong className="text-slate-800 dark:text-slate-200">PyTorch:</strong> Deep learning framework for implementing Transformer and LSTM architectures</li>
-                  <li><strong className="text-slate-800 dark:text-slate-200">Transformer Architecture:</strong> Attention-based model with multi-head self-attention and feed-forward layers</li>
-                  <li><strong className="text-slate-800 dark:text-slate-200">RNN/LSTM:</strong> Recurrent neural network with Long Short-Term Memory cells for sequence modeling</li>
-                  <li><strong className="text-slate-800 dark:text-slate-200">Custom Tokenizer:</strong> Byte-pair encoding (BPE) implementation for text preprocessing</li>
-                  <li><strong className="text-slate-800 dark:text-slate-200">FastAPI:</strong> Python backend API for model inference and text generation</li>
-                  <li><strong className="text-slate-800 dark:text-slate-200">Next.js & React:</strong> Frontend framework for interactive chat interface</li>
-                  <li><strong className="text-slate-800 dark:text-slate-200">Docker & Railway:</strong> Containerization and cloud deployment for the ML API service</li>
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Skills Developed</h3>
-                <ul className="list-disc list-inside space-y-2 leading-relaxed">
-                  <li>Neural network architecture implementation from scratch (Transformer and LSTM)</li>
-                  <li>Natural language processing and language model training</li>
-                  <li>Attention mechanism understanding and implementation</li>
-                  <li>Custom tokenizer development using byte-pair encoding</li>
-                  <li>Model training, validation, and hyperparameter optimization</li>
-                  <li>Full-stack development with ML model integration</li>
-                  <li>Asynchronous API design for handling concurrent inference requests</li>
-                  <li>Production deployment of machine learning models</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">PyTorch:</strong> Deep learning framework for implementing, training, and checkpointing both architectures from scratch</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Transformer architecture:</strong> Attention-based decoder with multi-head self-attention and feed-forward sublayers</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">RNN / LSTM:</strong> Recurrent network with Long Short-Term Memory cells for sequential language modelling</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Custom BPE tokeniser:</strong> Byte-pair encoding built from scratch on the training corpus, with no external tokenisation library</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">FastAPI:</strong> Python backend serving both models via a single inference endpoint, with a lightweight health check for cold-start detection</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Next.js &amp; React:</strong> Frontend framework powering the dual-panel chat interface and WebSocket-free real-time feel</li>
+                  <li><strong className="text-slate-800 dark:text-slate-200">Docker &amp; Railway:</strong> Containerised deployment with Docker Compose locally and Railway for production hosting</li>
                 </ul>
               </div>
 
               <div>
                 <h3 className="text-xl font-semibold mb-3 text-slate-800 dark:text-slate-200">Key Features</h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed">
-                  <li>Side-by-side comparison of Transformer and RNN model responses</li>
-                  <li>Real-time text generation with both models simultaneously</li>
-                  <li>Interactive chat interface for testing model capabilities</li>
-                  <li>Models trained on Shakespeare's plays for consistent comparison</li>
-                  <li>Responsive UI with independent scrolling panels and dark mode support</li>
-                  <li>Production-ready deployment with proper error handling and timeouts</li>
+                  <li>Side-by-side chat panels (green for Transformer, orange for RNN); every prompt gets both responses simultaneously</li>
+                  <li>Both models trained on identical data with identical hyperparameters for a genuinely controlled comparison</li>
+                  <li>Custom tokeniser built from the corpus, with no pre-trained vocabulary</li>
+                  <li>Wake API button with progressive retry logic for cold Railway host starts</li>
+                  <li>Auto-resizing textarea with Shift+Enter multi-line support</li>
+                  <li>Independent scroll tracking per model panel so outputs can be read at different paces</li>
                 </ul>
               </div>
             </div>
           </div>
         </div>
-
-      </div>
       </div>
     </SiteChrome>
   )

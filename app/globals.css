@@ -6,7 +6,7 @@
    --bg-from / --bg-to power the page gradient.
    They live on :root and are overridden by html.dark so the
    toggle (which adds/removes the .dark class on <html>) is the
-   single source of truth — no dependency on Tailwind's dark: build.
+   single source of truth; no dependency on Tailwind's dark: build.
    ─────────────────────────────────────────────────────────────── */
 :root {
   --background: #ffffff;

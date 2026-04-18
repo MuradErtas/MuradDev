@@ -8,7 +8,7 @@ const SITE_URL = 'https://muradertas.dev'
 
 export const metadata: Metadata = {
   // ── Core ──────────────────────────────────────────────────────────────────
-  title: 'Murad Ertaskin — Software Developer',
+  title: 'Murad Ertaskin, Software Developer',
   description:
     'Software developer specialising in data engineering and full-stack development. Portfolio of projects, experience, and contact.',
   metadataBase: new URL(SITE_URL),
@@ -18,17 +18,17 @@ export const metadata: Metadata = {
     type:        'website',
     url:         SITE_URL,
     siteName:    'Murad Ertaskin',
-    title:       'Murad Ertaskin — Software Developer',
+    title:       'Murad Ertaskin, Software Developer',
     description:
       'Software developer specialising in data engineering and full-stack development. Portfolio of projects, experience, and contact.',
     // For the best result on LinkedIn etc., create a 1200 × 630 px banner and
     // save it as /public/og-image.png. Until then, the avatar works as a fallback.
     images: [
       {
-        url:    '/og-image.png',   // create this — ideal 1200 × 630 px
+        url:    '/og-image.png',   // create this; ideal 1200 × 630 px
         width:  1200,
         height: 630,
-        alt:    'Murad Ertaskin — Software Developer',
+        alt:    'Murad Ertaskin, Software Developer',
       },
     ],
   },
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   // ── Twitter / X card ──────────────────────────────────────────────────────
   twitter: {
     card:        'summary_large_image',
-    title:       'Murad Ertaskin — Software Developer',
+    title:       'Murad Ertaskin, Software Developer',
     description:
       'Software developer specialising in data engineering and full-stack development.',
     images:      ['/og-image.png'],
@@ -65,7 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         {/*
           Anti-FOUC: runs before React hydrates so the correct dark/light class
-          is applied on the very first paint — no flash of wrong theme.
+          is applied on the very first paint, with no flash of wrong theme.
         */}
         <script
           dangerouslySetInnerHTML={{

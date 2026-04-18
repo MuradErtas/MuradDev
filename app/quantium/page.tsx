@@ -65,7 +65,7 @@ export default function QuantiumPage() {
 
         {/* Embedded Dashboard */}
         <div className="mb-8">
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg border border-slate-200 dark:border-slate-700">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg border border-slate-200 dark:border-slate-700 content-card">
             <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-300 mb-4">Interactive Dashboard</h2>
             <div className="relative w-full" style={{ minHeight: '600px' }}>
               <iframe
@@ -81,7 +81,7 @@ export default function QuantiumPage() {
 
         {/* Project Overview */}
         <div className="mb-8">
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700 content-card">
             <h2 className="project-section-h2">Project Overview</h2>
             <div className="space-y-4 text-slate-600 dark:text-slate-400">
               <p className="leading-relaxed">
@@ -116,7 +116,7 @@ export default function QuantiumPage() {
 
         {/* Data Transformation Showcase */}
         <div className="mb-8">
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700 content-card">
             <h2 className="project-section-h2">Data Transformation</h2>
             
             {/* Before/After Comparison */}
@@ -264,7 +264,7 @@ df.to_csv('data/pink_morsel_sales.csv', index=False)`}</code>
 
         {/* Dashboard Showcase */}
         <div className="mb-8">
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700 content-card">
             <h2 className="text-2xl font-semibold mb-4 text-slate-700 dark:text-slate-300">Interactive Dashboard</h2>
             <div className="space-y-4 text-slate-600 dark:text-slate-400">
               <p className="leading-relaxed">
@@ -288,7 +288,7 @@ df.to_csv('data/pink_morsel_sales.csv', index=False)`}</code>
 
         {/* About Section */}
         <div className="mb-8">
-          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700 content-card">
             <h2 className="project-section-h2">About This Project</h2>
             
             <div className="space-y-6 text-slate-600 dark:text-slate-400">
