@@ -20,6 +20,7 @@ export const PROJECTS_AREA_PATHS = new Set([
   '/streamlit-demo',
   '/webscraper-demo',
   '/web-automation-kit',
+  '/market-maker-sim',
 ])
 
 /**

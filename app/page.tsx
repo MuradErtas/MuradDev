@@ -69,7 +69,7 @@ const FEATURED_PROJECTS = [
     gradient: 'from-purple-400 to-pink-500',
     glowClass: 'hover:shadow-pink-500/30 hover:border-pink-400/50',
     title: 'Portfolio Website',
-    desc: 'This site — a modern portfolio with animations, dark mode, and a contact form, built with Next.js, TypeScript, and Tailwind CSS.',
+    desc: 'This site, a modern portfolio with animations, dark mode, and a contact form, built with Next.js, TypeScript, and Tailwind CSS.',
     tags: [
       { label: 'Next.js',  color: 'bg-blue-100   dark:bg-blue-900/30   text-blue-700   dark:text-blue-300'   },
       { label: 'TypeScript', color: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' },
@@ -77,15 +77,15 @@ const FEATURED_PROJECTS = [
     ],
   },
   {
-    path: '/rlsnake',
-    gradient: 'from-green-400 to-blue-500',
-    glowClass: 'hover:shadow-green-500/30 hover:border-green-400/50',
-    title: 'RL Snake',
-    desc: 'Watch reinforcement-learning agents play Snake. Compare 4 DQN models at different training stages to see how intelligence emerges.',
+    path: '/market-maker-sim',
+    gradient: 'from-emerald-500 to-slate-700',
+    glowClass: 'hover:shadow-emerald-500/30 hover:border-emerald-400/50',
+    title: 'Market Maker Simulator',
+    desc: 'Avellaneda–Stoikov optimal MM with LOB matching, regime-switching vol, Poisson noise flow, and a live WebSocket dashboard, FastAPI + React.',
     tags: [
-      { label: 'PyTorch',  color: 'bg-blue-100   dark:bg-blue-900/30   text-blue-700   dark:text-blue-300'   },
-      { label: 'RL / DQN', color: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' },
-      { label: 'AI / ML',  color: 'bg-green-100  dark:bg-green-900/30  text-green-700  dark:text-green-300'  },
+      { label: 'FastAPI',    color: 'bg-blue-100   dark:bg-blue-900/30   text-blue-700   dark:text-blue-300'   },
+      { label: 'TypeScript', color: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' },
+      { label: 'Quant',      color: 'bg-green-100  dark:bg-green-900/30  text-green-700  dark:text-green-300'  },
     ],
   },
 ]

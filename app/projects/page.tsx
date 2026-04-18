@@ -32,7 +32,7 @@ const projects: Project[] = [
   {
     id: 2,
     title: 'Portfolio Website',
-    description: 'This site — a modern portfolio with animations, dark mode, and a contact form, built with Next.js, TypeScript, and Tailwind CSS.',
+    description: 'This site, a modern portfolio with animations, dark mode, and a contact form, built with Next.js, TypeScript, and Tailwind CSS.',
     tags: [{ name: 'Next.js', color: 'blue' }, { name: 'TypeScript', color: 'purple' }, { name: 'Tailwind', color: 'green' }],
     image: 'from-purple-400 to-pink-500',
     glow: 'hover:shadow-pink-500/30 hover:border-pink-400/50',
@@ -40,6 +40,15 @@ const projects: Project[] = [
   },
   {
     id: 3,
+    title: 'Market Maker Simulator',
+    description: 'Live Avellaneda–Stoikov market maker vs Poisson noise flow with regime-switching vol: LOB engine, WebSocket dashboard, and quant metrics on Railway.',
+    tags: [{ name: 'FastAPI', color: 'blue' }, { name: 'TypeScript', color: 'purple' }, { name: 'Quant', color: 'green' }],
+    image: 'from-emerald-500 to-slate-700',
+    glow: 'hover:shadow-emerald-500/30 hover:border-emerald-400/50',
+    link: '/market-maker-sim',
+  },
+  {
+    id: 4,
     title: 'RL Snake',
     description: 'Watch reinforcement-learning agents play Snake! Compare 4 DQN models at different training stages to see how intelligence emerges.',
     tags: [{ name: 'PyTorch', color: 'blue' }, { name: 'RL / DQN', color: 'purple' }, { name: 'AI / ML', color: 'green' }],
@@ -48,7 +57,7 @@ const projects: Project[] = [
     link: '/rlsnake',
   },
   {
-    id: 4,
+    id: 5,
     title: 'Quantium Data Analytics',
     description: 'Transformed raw retail sales data into actionable insights, building interactive dashboards to surface customer purchasing trends.',
     tags: [{ name: 'Python', color: 'blue' }, { name: 'Pandas', color: 'purple' }, { name: 'Dash', color: 'green' }],
@@ -57,7 +66,7 @@ const projects: Project[] = [
     link: '/quantium',
   },
   {
-    id: 5,
+    id: 6,
     title: 'Streamlit Demo',
     description: 'Interactive web application built with Streamlit, showcasing data visualisation and interactive features.',
     tags: [{ name: 'Python', color: 'blue' }, { name: 'Streamlit', color: 'purple' }, { name: 'Data Viz', color: 'green' }],
@@ -66,7 +75,7 @@ const projects: Project[] = [
     link: '/streamlit-demo',
   },
   {
-    id: 6,
+    id: 7,
     title: 'Web Scraper Demo',
     description: 'Web scraping application that extracts structured data, handles Cloudflare protection, and provides interactive visualisation.',
     tags: [{ name: 'Python', color: 'blue' }, { name: 'Selenium', color: 'purple' }, { name: 'Streamlit', color: 'green' }],
@@ -75,7 +84,7 @@ const projects: Project[] = [
     link: '/webscraper-demo',
   },
   {
-    id: 7,
+    id: 8,
     title: 'Web Automation Kit',
     description: 'Config-driven web automation framework with multiple patterns: login flows, downloads, form filling, table scraping, and dynamic content.',
     tags: [{ name: 'Python', color: 'blue' }, { name: 'Selenium', color: 'purple' }, { name: 'Automation', color: 'green' }],

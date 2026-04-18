@@ -228,6 +228,10 @@ html.dark .section-alt {
 }
 
 @layer components {
+  /* Frosted panel: home hero + project page headers (orbs show through) */
+  .project-hero-glass {
+    @apply rounded-2xl px-8 py-6 backdrop-blur-sm bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 shadow-lg flex flex-col items-center;
+  }
   /* Match `/projects` “My Projects” and keep all project detail titles consistent */
   .project-page-h1 {
     @apply text-5xl md:text-6xl font-extrabold mb-4 text-center animated-gradient-text leading-tight animate-fade-down;
