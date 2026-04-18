@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import SiteChrome from '../components/SiteChrome'
-import { BTN_GITHUB } from '../constants/projectButtons'
+import { BTN_GITHUB, BTN_CONTROL_BLUE, BTN_CONTROL_RED, BTN_CONTROL_PURPLE, BTN_OPEN_EXTERNAL } from '../constants/projectButtons'
 
 interface GameState {
   score: number
@@ -19,6 +19,10 @@ export default function RLSnakePage() {
   const githubUrl = 'https://github.com/MuradErtas/RLSnake'
   const [selectedModel, setSelectedModel] = useState<ModelLevel | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [wakeLoading, setWakeLoading] = useState(false)
+  const [wakeBanner, setWakeBanner] = useState<string | null>(null)
+  const [apiReady, setApiReady] = useState(false)
+  const [apiCheckDone, setApiCheckDone] = useState(false)
   const [gameState, setGameState] = useState<GameState>({
     score: 0,
     gameOver: false,
@@ -66,6 +70,52 @@ export default function RLSnakePage() {
   const GRID_SIZE = 20
   const CELL_SIZE = 20
   const GAME_SPEED = 150 // ms per move
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        const r = await fetch(`/api/rlsnake/health?ts=${Date.now()}`, { cache: 'no-store' })
+        if (!cancelled && r.ok) setApiReady(true)
+      } catch {
+        /* cold / offline */
+      } finally {
+        if (!cancelled) setApiCheckDone(true)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const wakeServers = async () => {
+    if (wakeLoading || isPlaying) return
+    setWakeLoading(true)
+    setWakeBanner('Waking RL Snake API (first attempt can take up to ~50s if the host was asleep)…')
+    const maxPasses = 3
+    try {
+      for (let pass = 0; pass < maxPasses; pass++) {
+        try {
+          const res = await fetch(`/api/rlsnake/health?ts=${Date.now()}`, { cache: 'no-store' })
+          if (res.ok) {
+            setApiReady(true)
+            setWakeBanner('API is awake — you can pick a model and play.')
+            setTimeout(() => setWakeBanner(null), 6000)
+            return
+          }
+        } catch {
+          /* retry */
+        }
+        if (pass < maxPasses - 1) {
+          setWakeBanner('Still waiting… retrying in a few seconds.')
+          await new Promise(r => setTimeout(r, 3500))
+        }
+      }
+      setWakeBanner('API not responding yet. Wait a minute and tap Wake API again.')
+    } finally {
+      setWakeLoading(false)
+    }
+  }
 
   useEffect(() => {
     if (isPlaying && selectedModel && canvasRef.current && gameState.sessionId) {
@@ -187,8 +237,8 @@ export default function RLSnakePage() {
   }
 
   const handleStart = async () => {
-    if (!selectedModel) return
-    
+    if (!selectedModel || !apiReady) return
+
     try {
       const response = await fetch('/api/rlsnake/start', {
         method: 'POST',
@@ -210,6 +260,7 @@ export default function RLSnakePage() {
         sessionId: data.session_id
       })
       setIsPlaying(true)
+      setApiReady(true)
     } catch (error) {
       console.error('Error starting game:', error)
       alert('Failed to start game. Make sure the API server is running.')
@@ -222,8 +273,9 @@ export default function RLSnakePage() {
   }
 
   const handleReset = async () => {
+    if (!apiReady) return
     handleStop()
-    
+
     if (gameState.sessionId) {
       try {
         const response = await fetch('/api/rlsnake/reset', {
@@ -279,7 +331,7 @@ export default function RLSnakePage() {
             Watch reinforcement learning models play Snake! Select a model to see how training improves gameplay. 
             Models are trained using Deep Q-Learning (DQN) with PyTorch.
           </p>
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="flex flex-wrap gap-4 justify-center items-center">
             <a
               href={githubUrl}
               target="_blank"
@@ -291,6 +343,18 @@ export default function RLSnakePage() {
               </svg>
               <span className="leading-none">View on GitHub</span>
             </a>
+            <button
+              type="button"
+              onClick={wakeServers}
+              disabled={wakeLoading || isPlaying}
+              className={`${BTN_OPEN_EXTERNAL} disabled:opacity-45 disabled:cursor-not-allowed disabled:hover:scale-100`}
+              title="Pings the Python API until it responds — use when the host has been idle"
+            >
+              <svg className="w-5 h-5 shrink-0 -translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span className="relative z-10 leading-none">{wakeLoading ? 'Waking…' : 'Wake API'}</span>
+            </button>
           </div>
         </div>
 
@@ -299,34 +363,46 @@ export default function RLSnakePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {models.map((model) => {
               const isSelected = selectedModel === model.id
-              const colorClasses = {
-                red: isSelected 
-                  ? 'border-red-500 bg-red-50 dark:bg-red-900/20' 
-                  : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600',
-                orange: isSelected 
-                  ? 'border-orange-500 bg-orange-50 dark:bg-orange-900/20' 
-                  : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600',
-                yellow: isSelected 
-                  ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' 
-                  : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600',
-                green: isSelected 
-                  ? 'border-green-500 bg-green-50 dark:bg-green-900/20' 
-                  : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600'
+              const cardBase =
+                'group relative w-full text-left rounded-xl border-2 p-4 overflow-hidden transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 active:shadow-md'
+              const selectedByColor = {
+                red: 'border-red-500 bg-gradient-to-br from-red-50 via-white to-rose-50 dark:from-red-950/45 dark:via-slate-900 dark:to-rose-950/25 shadow-lg shadow-red-500/15 ring-2 ring-red-400/35 dark:ring-red-500/30',
+                orange:
+                  'border-orange-500 bg-gradient-to-br from-orange-50 via-white to-amber-50 dark:from-orange-950/45 dark:via-slate-900 dark:to-amber-950/25 shadow-lg shadow-orange-500/15 ring-2 ring-orange-400/35 dark:ring-orange-500/30',
+                yellow:
+                  'border-yellow-500 bg-gradient-to-br from-yellow-50 via-white to-amber-50/90 dark:from-yellow-950/35 dark:via-slate-900 dark:to-amber-950/20 shadow-lg shadow-yellow-500/15 ring-2 ring-yellow-400/40 dark:ring-yellow-500/25',
+                green:
+                  'border-green-500 bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-green-950/45 dark:via-slate-900 dark:to-emerald-950/25 shadow-lg shadow-green-500/15 ring-2 ring-green-400/35 dark:ring-green-500/30'
               }
-              
+              const idleByColor = {
+                red: 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-red-300 dark:hover:border-red-800/60',
+                orange:
+                  'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-orange-300 dark:hover:border-orange-800/60',
+                yellow:
+                  'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-yellow-300 dark:hover:border-yellow-800/50',
+                green:
+                  'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-green-300 dark:hover:border-green-800/60'
+              }
+              const c = model.color as keyof typeof selectedByColor
+
               return (
                 <button
                   key={model.id}
+                  type="button"
+                  disabled={!apiReady}
                   onClick={() => {
+                    if (!apiReady) return
                     setSelectedModel(model.id)
                     handleReset()
                   }}
-                  className={`p-4 rounded-xl border-2 transition-all ${colorClasses[model.color as keyof typeof colorClasses]}`}
+                  className={`${cardBase} ${isSelected ? selectedByColor[c] : idleByColor[c]} disabled:opacity-45 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-md`}
                 >
                   <div className="text-left">
-                    <h3 className="text-lg font-semibold mb-1">{model.name}</h3>
+                    <h3 className="text-lg font-semibold mb-1 group-hover:text-slate-900 dark:group-hover:text-slate-50">
+                      {model.name}
+                    </h3>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">{model.description}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-500">
+                    <p className="text-xs font-medium text-slate-500 dark:text-slate-500 tabular-nums">
                       {model.trainingEpisodes.toLocaleString()} episodes
                     </p>
                   </div>
@@ -368,29 +444,42 @@ export default function RLSnakePage() {
           </div>
 
           {/* Controls */}
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-3 justify-center">
             <button
+              type="button"
               onClick={handleStart}
-              disabled={!selectedModel || isPlaying}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors font-semibold"
+              disabled={!selectedModel || isPlaying || !apiReady}
+              className={BTN_CONTROL_BLUE}
             >
-              Start
+              <span className="relative z-10 leading-none">Start</span>
             </button>
             <button
+              type="button"
               onClick={handleStop}
               disabled={!isPlaying}
-              className="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors font-semibold"
+              className={BTN_CONTROL_RED}
             >
-              Stop
+              <span className="relative z-10 leading-none">Stop</span>
             </button>
             <button
+              type="button"
               onClick={handleReset}
-              disabled={!selectedModel}
-              className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors font-semibold"
+              disabled={!selectedModel || !apiReady}
+              className={BTN_CONTROL_PURPLE}
             >
-              Reset
+              <span className="relative z-10 leading-none">Reset</span>
             </button>
           </div>
+          {wakeBanner && (
+            <p className="mt-4 max-w-xl mx-auto text-center text-sm text-slate-600 dark:text-slate-400" role="status">
+              {wakeBanner}
+            </p>
+          )}
+          {!apiReady && apiCheckDone && !wakeBanner && (
+            <p className="mt-4 max-w-xl mx-auto text-center text-sm text-slate-500 dark:text-slate-500">
+              Model selection and play are disabled until the API responds. Use <span className="font-medium text-slate-700 dark:text-slate-300">Wake API</span> above if the host was asleep.
+            </p>
+          )}
         </div>
 
         {/* About Section */}

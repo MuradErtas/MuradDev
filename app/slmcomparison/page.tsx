@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import SiteChrome from '../components/SiteChrome'
-import { BTN_GITHUB } from '../constants/projectButtons'
+import { BTN_GITHUB, BTN_CONTROL_BLUE, BTN_CONTROL_PURPLE, BTN_OPEN_EXTERNAL } from '../constants/projectButtons'
 
 interface Message {
   id: string
@@ -16,6 +16,11 @@ export default function SLMComparisonPage() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [wakeLoading, setWakeLoading] = useState(false)
+  const [wakeBanner, setWakeBanner] = useState<string | null>(null)
+  /** Send stays disabled until health succeeds (mount, wake, or last successful generate). */
+  const [apiReady, setApiReady] = useState(false)
+  const [apiCheckDone, setApiCheckDone] = useState(false)
   const transformerEndRef = useRef<HTMLDivElement>(null)
   const rnnEndRef = useRef<HTMLDivElement>(null)
   const transformerScrollRef = useRef<HTMLDivElement>(null)
@@ -33,16 +38,38 @@ export default function SLMComparisonPage() {
     }
   }, [messages])
 
-  // Auto-resize textarea
+  const INPUT_MIN_PX = 48 // matches min-h-12 / control buttons
+  const INPUT_MAX_PX = 128 // max-h-32
+
+  // Auto-resize textarea (capped; keeps row aligned with side buttons)
   useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.style.height = 'auto'
-      inputRef.current.style.height = `${inputRef.current.scrollHeight}px`
-    }
+    const el = inputRef.current
+    if (!el) return
+    el.style.height = 'auto'
+    const h = Math.min(Math.max(el.scrollHeight, INPUT_MIN_PX), INPUT_MAX_PX)
+    el.style.height = `${h}px`
   }, [input])
 
+  // If backend is already warm, allow Send without tapping Wake first
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        const r = await fetch(`/api/slm/health?ts=${Date.now()}`, { cache: 'no-store' })
+        if (!cancelled && r.ok) setApiReady(true)
+      } catch {
+        /* cold / offline — user uses Wake API */
+      } finally {
+        if (!cancelled) setApiCheckDone(true)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   const handleSend = async () => {
-    if (!input.trim() || loading) return
+    if (!input.trim() || loading || !apiReady) return
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -85,6 +112,7 @@ export default function SLMComparisonPage() {
       }
 
       setMessages(prev => [...prev, transformerMessage, rnnMessage])
+      setApiReady(true)
     } catch (error) {
       console.error('Error:', error)
       const errorMessage: Message = {
@@ -99,10 +127,40 @@ export default function SLMComparisonPage() {
     }
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
-      handleSend()
+      if (apiReady) handleSend()
+    }
+  }
+
+  /** Hit lightweight health endpoint until API responds — wakes cold Railway / similar hosts */
+  const wakeServers = async () => {
+    if (wakeLoading || loading) return
+    setWakeLoading(true)
+    setWakeBanner('Waking API (first attempt can take up to ~50s if the host was asleep)…')
+    const maxPasses = 3
+    try {
+      for (let pass = 0; pass < maxPasses; pass++) {
+        try {
+          const res = await fetch(`/api/slm/health?ts=${Date.now()}`, { cache: 'no-store' })
+          if (res.ok) {
+            setApiReady(true)
+            setWakeBanner('Backend is awake — you can send a message.')
+            setTimeout(() => setWakeBanner(null), 6000)
+            return
+          }
+        } catch {
+          /* retry */
+        }
+        if (pass < maxPasses - 1) {
+          setWakeBanner('Still waiting… retrying in a few seconds.')
+          await new Promise(r => setTimeout(r, 3500))
+        }
+      }
+      setWakeBanner('API not responding yet. Wait a minute and tap Wake API again, then send.')
+    } finally {
+      setWakeLoading(false)
     }
   }
 
@@ -144,7 +202,7 @@ export default function SLMComparisonPage() {
           <p className="text-center text-slate-600 dark:text-slate-300 mb-6 max-w-3xl mx-auto">
             Compare Transformer and RNN small language model responses side by side, trained on the same dataset (Shakespeare's plays) with the same hyperparameters. Built from scratch using PyTorch with a custom tokeniser, see GitHub repository for more details.
           </p>
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="flex flex-wrap gap-4 justify-center items-center">
             <a
               href={githubUrl}
               target="_blank"
@@ -156,6 +214,18 @@ export default function SLMComparisonPage() {
               </svg>
               <span className="leading-none">View on GitHub</span>
             </a>
+            <button
+              type="button"
+              onClick={wakeServers}
+              disabled={wakeLoading || loading}
+              className={`${BTN_OPEN_EXTERNAL} disabled:opacity-45 disabled:cursor-not-allowed disabled:hover:scale-100`}
+              title="Pings the Python API until it responds — use when the host has been idle"
+            >
+              <svg className="w-5 h-5 shrink-0 -translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <span className="relative z-10 leading-none">{wakeLoading ? 'Waking…' : 'Wake API'}</span>
+            </button>
           </div>
         </div>
       </div>
@@ -257,31 +327,44 @@ export default function SLMComparisonPage() {
 
         {/* Input Area */}
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-4">
-          <div className="flex gap-2">
+          <div className="flex flex-wrap sm:flex-nowrap gap-2 items-stretch">
             <textarea
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onKeyDown={handleKeyDown}
               placeholder="Type your message here... (Press Enter to send, Shift+Enter for new line)"
-              className="flex-1 px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 resize-none max-h-32 hide-scrollbar overflow-hidden"
+              className="flex-1 min-w-[min(100%,12rem)] min-h-12 max-h-32 px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 resize-none hide-scrollbar overflow-y-auto box-border"
               rows={1}
               disabled={loading}
             />
             <button
+              type="button"
               onClick={handleSend}
-              disabled={!input.trim() || loading}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors font-semibold"
+              disabled={!input.trim() || loading || !apiReady}
+              className={`${BTN_CONTROL_BLUE} self-stretch shrink-0`}
             >
-              {loading ? 'Sending...' : 'Send'}
+              <span className="relative z-10 leading-none">{loading ? 'Sending…' : 'Send'}</span>
             </button>
             <button
-                onClick={clearChat}
-                className="px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors font-semibold"
-              >
-                Clear
-              </button>
+              type="button"
+              onClick={clearChat}
+              disabled={messages.length === 0}
+              className={`${BTN_CONTROL_PURPLE} self-stretch shrink-0`}
+            >
+              <span className="relative z-10 leading-none">Clear</span>
+            </button>
           </div>
+          {wakeBanner && (
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400" role="status">
+              {wakeBanner}
+            </p>
+          )}
+          {!apiReady && apiCheckDone && !wakeBanner && (
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-500">
+              Send is disabled until the API responds. Use <span className="font-medium text-slate-700 dark:text-slate-300">Wake API</span> above if the host was asleep.
+            </p>
+          )}
         </div>
 
         {/* About Section */}

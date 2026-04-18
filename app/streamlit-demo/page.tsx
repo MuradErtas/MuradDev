@@ -3,9 +3,26 @@
 import SiteChrome from '../components/SiteChrome'
 import { BTN_GITHUB, BTN_OPEN_EXTERNAL } from '../constants/projectButtons'
 
+/** Public app URL (no embed flag). Override with NEXT_PUBLIC_STREAMLIT_DEMO_URL. */
+const STREAMLIT_DEMO_DEFAULT = 'https://muradertas-demo.streamlit.app'
+
+function normalizeStreamlitBase(url: string): string {
+  return url.trim().replace(/\/+$/, '') || STREAMLIT_DEMO_DEFAULT
+}
+
+/** Streamlit Community Cloud allows iframes when using `?embed=true` (see Streamlit embed docs). */
+function streamlitEmbedSrc(base: string): string {
+  return `${normalizeStreamlitBase(base)}/?embed=true`
+}
+
 export default function StreamlitDemoPage() {
-  const streamlitUrl = 'https://muradertas-demo.streamlit.app/'
   const githubUrl = 'https://github.com/MuradErtas/Streamlit-Demo'
+  const streamlitBase =
+    normalizeStreamlitBase(
+      process.env.NEXT_PUBLIC_STREAMLIT_DEMO_URL || STREAMLIT_DEMO_DEFAULT
+    )
+  const streamlitOpenUrl = `${streamlitBase}/`
+  const streamlitIframeSrc = streamlitEmbedSrc(streamlitBase)
 
   return (
     <SiteChrome
@@ -45,7 +62,7 @@ export default function StreamlitDemoPage() {
               <span className="leading-none">View on GitHub</span>
             </a>
             <a
-              href={streamlitUrl}
+              href={streamlitOpenUrl}
               target="_blank"
               rel="noopener noreferrer"
               className={BTN_OPEN_EXTERNAL}
@@ -55,6 +72,24 @@ export default function StreamlitDemoPage() {
               </svg>
               <span className="leading-none">Open in new tab</span>
             </a>
+          </div>
+        </div>
+
+        {/* Embedded app — `?embed=true` is required for iframe embedding on Streamlit Cloud */}
+        <div className="mb-8">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg border border-slate-200 dark:border-slate-700">
+            <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-300 mb-4">
+              Interactive Dashboard
+            </h2>
+            <div className="relative w-full" style={{ minHeight: '600px' }}>
+              <iframe
+                src={streamlitIframeSrc}
+                className="w-full h-full border-0 rounded-lg"
+                style={{ minHeight: '600px', height: '100vh', maxHeight: '800px' }}
+                title="Streamlit demo app"
+                allow="fullscreen"
+              />
+            </div>
           </div>
         </div>
 

@@ -3,9 +3,23 @@
 import SiteChrome from '../components/SiteChrome'
 import { BTN_GITHUB, BTN_OPEN_EXTERNAL } from '../constants/projectButtons'
 
+const WEBSCRAPER_DEMO_DEFAULT = 'https://webscraper-demo.streamlit.app'
+
+function normalizeStreamlitBase(url: string): string {
+  return url.trim().replace(/\/+$/, '') || WEBSCRAPER_DEMO_DEFAULT
+}
+
+function streamlitEmbedSrc(base: string): string {
+  return `${normalizeStreamlitBase(base)}/?embed=true`
+}
+
 export default function WebScraperDemoPage() {
-  const streamlitUrl = 'https://webscraper-demo.streamlit.app/'
   const githubUrl = 'https://github.com/MuradErtas/WebScraper-Demo'
+  const appBase = normalizeStreamlitBase(
+    process.env.NEXT_PUBLIC_WEBSCRAPER_DEMO_URL || WEBSCRAPER_DEMO_DEFAULT
+  )
+  const streamlitOpenUrl = `${appBase}/`
+  const streamlitIframeSrc = streamlitEmbedSrc(appBase)
 
   return (
     <SiteChrome
@@ -46,7 +60,7 @@ export default function WebScraperDemoPage() {
               <span className="leading-none">View on GitHub</span>
             </a>
             <a
-              href={streamlitUrl}
+              href={streamlitOpenUrl}
               target="_blank"
               rel="noopener noreferrer"
               className={BTN_OPEN_EXTERNAL}
@@ -56,6 +70,23 @@ export default function WebScraperDemoPage() {
               </svg>
               <span className="leading-none">Open in new tab</span>
             </a>
+          </div>
+        </div>
+
+        <div className="mb-8">
+          <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg border border-slate-200 dark:border-slate-700">
+            <h2 className="text-2xl font-semibold text-slate-700 dark:text-slate-300 mb-4">
+              Interactive Dashboard
+            </h2>
+            <div className="relative w-full" style={{ minHeight: '600px' }}>
+              <iframe
+                src={streamlitIframeSrc}
+                className="w-full h-full border-0 rounded-lg"
+                style={{ minHeight: '600px', height: '100vh', maxHeight: '800px' }}
+                title="Web scraper Streamlit demo"
+                allow="fullscreen"
+              />
+            </div>
           </div>
         </div>
 
