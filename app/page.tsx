@@ -34,7 +34,15 @@ const TECH_STACK = [
 
 const TIMELINE = [
   {
-    period: '2025 – Present',
+    period: 'Jun 2025 – Present',
+    role: 'Freelance Software Engineer',
+    org: 'Upwork · Self-employed',
+    tags: ['Machine Learning', 'Web Development', 'Web Scraping', 'Client Relations', 'Project Management'],
+    desc: 'Working with clients to bring their software ideas to life, including creating custom machine learning models, designing and deploying personal websites, and scraping data and displaying it in an easily understandable way.',
+    dotColor: 'from-green-500 to-emerald-500',
+  },
+  {
+    period: 'Feb 2025 – Present',
     role: 'Bachelor of Computer Science',
     org: 'University of Adelaide',
     tags: ['AI & Machine Learning', 'Deep Learning', 'Algorithms', 'Software Engineering'],
@@ -42,7 +50,7 @@ const TIMELINE = [
     dotColor: 'from-blue-500 to-purple-500',
   },
   {
-    period: '2025',
+    period: 'Dec 2025',
     role: 'Data Analytics Project',
     org: 'Quantium',
     tags: ['Python', 'Pandas', 'Dash', 'Data Visualisation'],
@@ -599,7 +607,7 @@ export default function Home() {
             )}
           </div>
         </div>
-      </section>
+          </section>
 
       {/* ── Footer ── */}
       <footer className="py-8 px-6 border-t border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-800/95 relative z-10">
