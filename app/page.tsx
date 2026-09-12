@@ -518,7 +518,7 @@ export default function Home() {
             className="animate-on-scroll inline-block shimmer-btn px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all font-semibold shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 hover:scale-105"
             style={{ transitionDelay: '0.2s' }}
           >
-            ↓ Download CV (PDF)
+            Download CV (PDF)
           </a>
         </div>
       </section>
